@@ -1,4 +1,7 @@
 import Tom from "../model/Toms";
+import kapowWrapper from "../kapow/KapowWrapper";
+import Move from "../model/Move";
+import MoveData from "../model/MoveData";
 
 class Arena extends Phaser.State {
 
@@ -6,24 +9,29 @@ class Arena extends Phaser.State {
         this.game.load.image('car', 'assets/player.png');
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.physics.arcade.gravity.y = 500;
+        this.currentTurn = 0;
 
     }
 
     create() {
-        console.log("Arna Started");
-        this.dragAndShoot = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'car');
-        this.game.physics.enable([this.dragAndShoot], Phaser.Physics.ARCADE);
-        this.dragAndShoot.body.allowGravity = false;
-        console.log(this.dragAndShoot);
-        this.dragAndShootTransparent = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'car');
-        this.game.physics.enable([this.dragAndShootTransparent], Phaser.Physics.ARCADE);
-        this.dragAndShootTransparent.inputEnabled = true;
-        this.dragAndShootTransparent.body.allowGravity = false;
-        this.dragAndShootTransparent.input.enableDrag(true);
-        this.dragAndShootTransparent.alpha = 0.4;
-        this.dragAndShootTransparent.events.onDragStop.add(this.dragFinished, this, 0, this.dragAndShoot);
-        this.stage.addChild(this.dragAndShoot);
-        this.stage.addChild(this.dragAndShootTransparent);
+        let button = this.game.add.button(this.game.world.centerX - 95, 400, 'car', this.actionOnClick, this, 2, 1, 0);
+        var self = this;
+        kapow.getUserInfo(function (owner) {
+            console.log(owner);
+            self.tom = new Tom(self.game, 0, 0, 'car', "296ai69lxpxa2a99@kapow.games");
+            self.harry = new Tom(self.game, 0, 0, 'car', "rbuluxl6tcjrtrtx@kapow.games");
+        });
+    }
+
+    actionOnClick() {
+        console.log("Arena button clicked");
+        if (this.currentTurn === 0) {
+            // tom's turn
+            kapowWrapper.callOnServer('sendTurn', new MoveData(new Move(this.tom.player, this.harry.player, 10, 10), this.tom.player.jid, this.harry.player.jid));
+        } else {
+            // harry's turn
+            kapowWrapper.callOnServer('sendTurn', new MoveData(new Move(this.tom.player, this.harry.player, 10, 10), this.harry.player.jid, this.tom.player.jid));
+        }
     }
 
     dragFinished(draggedObject, pointer, initialObject) {

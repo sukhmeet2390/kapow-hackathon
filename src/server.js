@@ -8,18 +8,21 @@ console.log("SERVER JS!");
 var game = {
     onMessageDelivered: function (data) {
         console.log("SERVER onMessageDelivered : " + JSON.stringify(data));
+        kapow.return();
     },
 
     onPlayerJoined: function (playerObj) {
     	console.log("SERVER onPlayerJoined called : " + playerObj);
+        kapow.return();
     },
 
     sendTurn: function (moveObj) {
-    	console.log("SERVER sendTurn called : " + turn);
+    	console.log("SERVER sendTurn called : " + moveObj);
     	var room = kapow.getRoomInfo();
     	kapow.game.sendTurn(moveObj.move, room.roomId, moveObj.player, moveObj.opponent, null,
     		function() {
     			console.log("SERVER sendTurn successful!");
+    			kapow.return(true);
     		},
     		function(error) {
     			console.log("SERVER error in sendTurn : " + error);
@@ -34,6 +37,7 @@ var game = {
     	kapow.game.sendData(dataObj.data, dataObj.player, room.roomId,
     		function() {
     			console.log("SERVER sendData successful!");
+                kapow.return(true);
     		},
     		function(error) {
     			console.log("SERVER error in sendData : " + error);

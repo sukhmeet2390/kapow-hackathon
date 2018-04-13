@@ -1,8 +1,11 @@
 "use strict";
 
 class Move {
-    constructor(p1Health, p2Health) {
-
+    constructor(tom, harry, power, angle) {
+        this.tom = tom;
+        this.harry = harry;
+        this.power = power;
+        this.angle = angle;
     }
 }
 

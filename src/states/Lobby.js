@@ -24,9 +24,10 @@ class Lobby extends Phaser.State {
 
     onClick() {
         console.log("Game started!");
+        var self = this;
         kapowWrapper.startGameWithFriends(function() {
             console.log("Starting game with friends!");
-            this.game.state.start("Arena");
+            self.game.state.start("Arena");
         },
         function(error) {
             console.log(error);

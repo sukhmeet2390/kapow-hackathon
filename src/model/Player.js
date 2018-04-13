@@ -2,8 +2,9 @@
 import Health from './Health';
 
 export default class Player {
-    constructor(name, powers) {
+    constructor(name, jid, powers) {
         this.name = name;
+        this.jid = jid;
         this.powers = powers;
         this.health = new Health(100);
     }

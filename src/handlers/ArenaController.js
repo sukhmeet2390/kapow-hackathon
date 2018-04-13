@@ -5,5 +5,9 @@ class ArenaController{
 
     }
 
+    handleMove(message){
+
+    }
+
 }
 export default ArenaController;
