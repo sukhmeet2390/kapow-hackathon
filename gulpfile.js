@@ -17,6 +17,8 @@ var browserSync = require('browser-sync');
  */
 var PHASER_PATH = './node_modules/phaser/build/';
 var PUBSUB_PATH = './node_modules/pubsub.js/';
+var LIB_PATH = './lib/';
+
 var BUILD_PATH = './build';
 var SCRIPTS_PATH = BUILD_PATH + '/scripts';
 var SOURCE_PATH = './src';
@@ -108,6 +110,15 @@ function copyPubSub() {
     return gulp.src(srcList)
         .pipe(gulp.dest(SCRIPTS_PATH));
 }
+function copyLib() {
+
+    var srcList = ['phase-slide.js', 'phaser-modal.js'];
+    srcList = srcList.map(function (file) {
+        return LIB_PATH + file;
+    });
+    return gulp.src(srcList)
+        .pipe(gulp.dest(SCRIPTS_PATH));
+}
 
 
 /**
@@ -172,7 +183,8 @@ gulp.task('cleanBuild', cleanBuild);
 gulp.task('copyStatic', ['cleanBuild'], copyStatic);
 gulp.task('copyPubsub', ['copyStatic'], copyPubSub);
 gulp.task('copyPhaser', ['copyPubsub'], copyPhaser);
-gulp.task('build', ['copyPhaser'], build);
+gulp.task('copyLib', ['copyPhaser'], copyLib);
+gulp.task('build', ['copyLib'], build);
 gulp.task('fastBuild', build);
 gulp.task('serve', ['build'], serve);
 gulp.task('watch-js', ['fastBuild'], browserSync.reload); // Rebuilds and reloads the project when executed.

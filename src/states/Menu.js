@@ -20,9 +20,15 @@ class StartPlay extends Phaser.State {
         //pubsub.publish('menu/playButtonClicked', [this]);
     }
     shutdown() {
+        console.log("Shut down for Menu");
+        console.log(this.stage.children);
         for (let i = this.game.stage.children.length - 1; i >= 0; i--) {
+            this.game.stage.children[i].destroy();
             this.game.stage.removeChild(this.game.stage.children[i]);
         }
+        console.log(this.stage.children);
+        console.log("Shut down for Menu completed");
+
     }
 
 }

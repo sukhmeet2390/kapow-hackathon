@@ -9,7 +9,7 @@ class Game extends Phaser.Game {
 
 	constructor() {
 		EvenHandler.init();
-		super(600, 500, Phaser.AUTO);
+		super(1024, 700, Phaser.CANVAS, );
 		this.state.add('Preload', Preload, false);
 		this.state.add('Menu', Menu, false);
 		this.state.add('Lobby', Lobby, false);
