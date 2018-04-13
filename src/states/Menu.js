@@ -7,7 +7,7 @@ class StartPlay extends Phaser.State {
 
     create() {
         let button = this.game.add.button(this.game.world.centerX - 95, 400, 'button', this.actionOnClick, this, 2, 1, 0);
-        this.game.stage.addChild(button);
+        //this.game.stage.addChild(button);
     }
 
     update() {
@@ -15,21 +15,20 @@ class StartPlay extends Phaser.State {
     }
 
     actionOnClick(){
-        console.log("Clc");
+        
         this.game.state.start("Arena");
         //pubsub.publish('menu/playButtonClicked', [this]);
     }
-    shutdown() {
-        console.log("Shut down for Menu");
-        console.log(this.stage.children);
-        for (let i = this.game.stage.children.length - 1; i >= 0; i--) {
-            this.game.stage.children[i].destroy();
-            this.game.stage.removeChild(this.game.stage.children[i]);
-        }
-        console.log(this.stage.children);
-        console.log("Shut down for Menu completed");
-
-    }
+    // shutdown() {
+    //     console.log(this.stage.children);
+    //     console.log("Shut down for Menu");
+    //     console.log(this.stage.children);
+    //     for (let i = this.game.stage.children.length - 1; i >= 0; i--) {
+    //        //this.game.stage.children[i].destroy();
+    //         this.game.stage.removeChild(this.game.stage.children[i]);
+    //     }
+    //     console.log("Shut down for Menu completed");
+    // }
 
 }
 

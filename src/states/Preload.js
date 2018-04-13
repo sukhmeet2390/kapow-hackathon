@@ -8,10 +8,10 @@ class Preload extends Phaser.State {
         //this.game.load.audio('myAudio', 'assets/my-audio.wav');
         //this.game.load.atlas('myAtlas', 'assets/my-atlas.png', 'assets/my-atlas.json');
         //this.game.load.crossOrigin = "anonymous";
-        this.game.load.image('tom', 'assets/player.png');
+
         this.game.load.image('button', 'assets/playGame.png');
         this.game.load.image('bg', 'assets/playGame.png');
-
+        this.input.maxPointers = 1;
     }
 
     create() {
@@ -21,10 +21,10 @@ class Preload extends Phaser.State {
         this.loading.x = this.game.world.centerX - 100;
         this.loading.y = this.game.world.centerY;
         var self = this;
-        var id= setInterval(function(){
-            let prog= self.loading.progress;
-            self.loading.progress = prog+0.1;
-            if(self.loading.progress === 0.999999){
+        var id = setInterval(function () {
+            let prog = self.loading.progress;
+            self.loading.progress = prog + 0.1;
+            if (self.loading.progress === 0.999999) {
                 console.log("Clear");
                 clearTimeout(id);
                 self.game.state.start("Menu");
