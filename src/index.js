@@ -1,22 +1,22 @@
-import Boot from 'states/Boot';
+import Lobby from 'states/Lobby';
 import Preload from 'states/Preload';
-import GameTitle from 'states/GameTitle';
-import Main from 'states/Main';
+import Arena from 'states/Arena';
+import Menu from 'states/Menu';
+import EvenHandler  from 'handlers/EventHandler';
 import GameOver from 'states/GameOver';
 
 class Game extends Phaser.Game {
 
 	constructor() {
-
-		super(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.AUTO);
-
-		this.state.add('Boot', Boot, false);
+		EvenHandler.init();
+		super(600, 500, Phaser.AUTO);
 		this.state.add('Preload', Preload, false);
-		this.state.add('GameTitle', GameTitle, false);
-		this.state.add('Main', Main, false);
+		this.state.add('Menu', Menu, false);
+		this.state.add('Lobby', Lobby, false);
+		this.state.add('Arena', Arena, false);
 		this.state.add('GameOver', GameOver, false);
 
-		this.state.start('Boot');
+		this.state.start('Preload');
 	}
 
 }

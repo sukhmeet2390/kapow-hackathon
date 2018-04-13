@@ -28,6 +28,8 @@
     "yargs": "^3.16.1"
   },
   "dependencies": {
-    "phaser": "^2.4.1"
+    "phaser": "^2.4.1",
+    "phaser-ui": "0.0.8",
+    "pubsub.js": "^1.5.2"
   }
 }

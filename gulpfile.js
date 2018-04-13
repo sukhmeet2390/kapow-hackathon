@@ -16,6 +16,7 @@ var browserSync = require('browser-sync');
  * Using different folders/file names? Change these constants:
  */
 var PHASER_PATH = './node_modules/phaser/build/';
+var PUBSUB_PATH = './node_modules/pubsub.js/';
 var BUILD_PATH = './build';
 var SCRIPTS_PATH = BUILD_PATH + '/scripts';
 var SOURCE_PATH = './src';
@@ -88,6 +89,26 @@ function copyPhaser() {
         .pipe(gulp.dest(SCRIPTS_PATH));
 
 }
+/**
+ * Copies required pubsub.js files from the './node_modules/pubsub.js' folder into the './build/scripts' folder.
+ * This way you can call 'npm update', get the lastest pubsub.js version and use it on your project with ease.
+ */
+function copyPubSub() {
+
+    var srcList = ['pubsub.min.js'];
+
+    if (!isProduction()) {
+        srcList.push('pubsub.map', 'pubsub.js');
+    }
+
+    srcList = srcList.map(function (file) {
+        return PUBSUB_PATH + file;
+    });
+
+    return gulp.src(srcList)
+        .pipe(gulp.dest(SCRIPTS_PATH));
+}
+
 
 /**
  * Transforms ES2015 code into ES5 code.
@@ -149,7 +170,8 @@ function serve() {
 
 gulp.task('cleanBuild', cleanBuild);
 gulp.task('copyStatic', ['cleanBuild'], copyStatic);
-gulp.task('copyPhaser', ['copyStatic'], copyPhaser);
+gulp.task('copyPubsub', ['copyStatic'], copyPubSub);
+gulp.task('copyPhaser', ['copyPubsub'], copyPhaser);
 gulp.task('build', ['copyPhaser'], build);
 gulp.task('fastBuild', build);
 gulp.task('serve', ['build'], serve);
