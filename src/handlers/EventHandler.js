@@ -1,5 +1,5 @@
 "use strict";
-import GameController from "./GameController";
+import GameController from "./GameControllers";
 import ArenaController from "./ArenaController";
 
 let EventHandler = {

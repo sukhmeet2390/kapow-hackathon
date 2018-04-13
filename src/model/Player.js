@@ -1,10 +1,10 @@
 "use strict";
 import Health from './Health';
 
-class Player {
+export default class Player {
     constructor(name, powers) {
         this.name = name;
-        this.powers = [];
+        this.powers = powers;
         this.health = new Health(100);
     }
 

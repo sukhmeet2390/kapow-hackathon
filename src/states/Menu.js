@@ -16,8 +16,15 @@ class StartPlay extends Phaser.State {
 
     actionOnClick(){
         console.log("Clc");
-        pubsub.publish('menu/playButtonClicked', [this]);
+        this.game.state.start("Arena");
+        //pubsub.publish('menu/playButtonClicked', [this]);
     }
+    shutdown() {
+        for (let i = this.game.stage.children.length - 1; i >= 0; i--) {
+            this.game.stage.removeChild(this.game.stage.children[i]);
+        }
+    }
+
 }
 
 export default StartPlay;

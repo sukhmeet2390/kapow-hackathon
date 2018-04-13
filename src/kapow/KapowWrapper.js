@@ -21,7 +21,7 @@ let KapowWrapper = {
     },
     callOnServer(fnName, param, successBack, errBack) {
         if (!errBack) errBack = this._errback;
-        kapow.invokeRPC(fnName, projectOntoAxis, successBack, errBack);
+        kapow.invokeRPC(fnName, param, successBack, errBack);
     },
     getGameData(key, successCb, errBack) {
         if (!errBack) errBack = this._errback;
@@ -29,7 +29,7 @@ let KapowWrapper = {
     },
     setGameData(key, value, successCb, errBack) {
         if (!errBack) errBack = this._errback;
-        kapow.gameStore.set(key, successCb, errBack);
+        kapow.gameStore.set(key, value, successCb, errBack);
     },
     getRoomData(key, successCb, errBack) {
         if (!errBack) errBack = this._errback;
@@ -37,7 +37,7 @@ let KapowWrapper = {
     },
     setRoomData(key, value, successCb, errBack) {
         if (!errBack) errBack = this._errback;
-        kapow.roomStore.set(key, successCb, errBack);
+        kapow.roomStore.set(key, value, successCb, errBack);
     },
     getUserInfo(successCb, errBack) {
         if (!errBack) errBack = this._errback;

@@ -1,6 +1,6 @@
 "use strict";
 
-class Health {
+export default class Health {
     constructor(value) {
         this.value = value;
     }
