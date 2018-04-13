@@ -16,7 +16,7 @@ class StartPlay extends Phaser.State {
 
     actionOnClick(){
         
-        this.game.state.start("Arena");
+        this.game.state.start("Lobby");
         //pubsub.publish('menu/playButtonClicked', [this]);
     }
     // shutdown() {
