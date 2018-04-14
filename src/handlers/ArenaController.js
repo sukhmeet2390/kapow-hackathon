@@ -15,9 +15,16 @@ class ArenaController{
 
     endGame(message) {
     	console.log("Received game end, handling! : " + JSON.stringify(message));
-    	if (message.type == "outcome") {
+    	if (message.type === "outcome") {
     		this.game.state.states.Arena.endGame(message);
     	}
+    }
+
+    handleTurnChange(message) {
+        console.log("Received turn change message, handling : " + JSON.stringify(message));
+        if (message.type === "turn_change") {
+            this.game.state.states.Arena.turnChange(message);
+        }
     }
 
 }

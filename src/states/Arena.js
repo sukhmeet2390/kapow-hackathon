@@ -162,6 +162,15 @@ class Arena extends Phaser.State {
         this.secondPlayerWeapon.body.allowGravity = false;
     }
 
+    turnChange(player) {
+        console.log("Turn change received in arena : " + JSON.stringify(player));
+        if (player === this.playerID) {
+            this.enableTurn();
+        } else {
+            this.disableTurn();
+        }
+    }
+
     endGame(message) {
         console.log("End game called : " + JSON.stringify(message));
         this.game.state.start("GameOver");

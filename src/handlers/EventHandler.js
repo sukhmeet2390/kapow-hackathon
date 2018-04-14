@@ -23,6 +23,7 @@ let EventHandler = {
                 this.arenaController.endGame(message);
                 break;
             case "turn_change":
+                this.arenaController.handleTurnChange(message);
                 break;
             case "affiliation_change":
                 break;
