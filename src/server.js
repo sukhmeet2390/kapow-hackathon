@@ -13,9 +13,19 @@ var game = {
 
     onPlayerJoined: function (playerObj) {
     	console.log("SERVER onPlayerJoined called : " + JSON.stringify(playerObj));
-        kapow.return();
+        var move = createMoveObject("", playerObj.id);
+        sendTurn(move);
+        // kapow.return();
     },
-
+    createMoveObject(data, playerId) {
+        var room = kapow.getRoomInfo();
+        var opponent = (room.players[0] === playerId) ? room.players[1] : room.players[0];
+        var moveObj = {};
+        moveObj["move"] = data;
+        moveObj["player"] = playerId;
+        moveObj["opponent"] = opponent;
+        return moveObj;
+    },
     sendTurn: function (moveObj) {
     	console.log("SERVER sendTurn called : " + JSON.stringify(moveObj));
     	var room = kapow.getRoomInfo();
