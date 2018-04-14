@@ -12,12 +12,12 @@ var game = {
     },
 
     onPlayerJoined: function (playerObj) {
-    	console.log("SERVER onPlayerJoined called : " + playerObj);
+    	console.log("SERVER onPlayerJoined called : " + JSON.stringify(playerObj));
         kapow.return();
     },
 
     sendTurn: function (moveObj) {
-    	console.log("SERVER sendTurn called : " + moveObj);
+    	console.log("SERVER sendTurn called : " + JSON.stringify(moveObj));
     	var room = kapow.getRoomInfo();
     	kapow.game.sendTurn(moveObj.move, room.roomId, moveObj.player, moveObj.opponent, null,
     		function() {
@@ -32,7 +32,7 @@ var game = {
     },
 
     sendData: function (dataObj) {
-    	console.log("SERVER sendData called : " + dataObj);
+    	console.log("SERVER sendData called : " + JSON.stringify(dataObj));
     	var room = kapow.getRoomInfo();
     	kapow.game.sendData(dataObj.data, dataObj.player, room.roomId,
     		function() {
@@ -47,7 +47,7 @@ var game = {
     },
 
     resignationRequest: function (move) {
-    	console.log("SERVER resignationRequest called : " + move);
+    	console.log("SERVER resignationRequest called : " + JSON.stringify(move));
     	quitGame(move.player, "resignation");
     },
 
@@ -57,7 +57,7 @@ var game = {
     },
 
     quitGame: function(playerId, outcomeType) {
-    	console.log("SERVER quitGame called for playerId : " + playerId + " with outcomeType : " +  outcomeType);
+    	console.log("SERVER quitGame called for playerId : " + JSON.stringify(playerId) + " with outcomeType : " +  JSON.stringify(outcomeType));
     	var room = kapow.getRoomInfo();
         var ranking = [1, 2];
         if (room.players[0] === playerId) {

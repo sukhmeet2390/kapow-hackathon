@@ -1,11 +1,12 @@
 "use strict";
 
 class Move {
-    constructor(tom, harry, power, angle) {
+    constructor(tom, harry, power, angle, sentByJid) {
         this.tom = tom;
         this.harry = harry;
         this.power = power;
         this.angle = angle;
+        this.sentBy = sentByJid;
     }
 }
 

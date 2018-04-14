@@ -3,9 +3,9 @@ import GameController from "./GameControllers";
 import ArenaController from "./ArenaController";
 
 let EventHandler = {
-    init() {
-        this.gameController = new GameController();
-        this.arenaController = new ArenaController();
+    init(game) {
+        this.gameController = new GameController(game);
+        this.arenaController = new ArenaController(game);
         pubsub.subscribe("menu/playButtonClicked", this.gameController.initNewGame);
         pubsub.subscribe("kapow/game/messageReceived", this._handleMessage)
     },
