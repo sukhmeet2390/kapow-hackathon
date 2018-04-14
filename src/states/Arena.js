@@ -4,13 +4,11 @@ import Move from "../model/Move";
 import MoveData from "../model/MoveData";
 
 class Arena extends Phaser.State {
-
     preload() {
         this.game.load.image('car', 'assets/player.png');
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.physics.arcade.gravity.y = 500;
         this.currentTurn = 0;
-
     }
 
     create() {
@@ -27,10 +25,10 @@ class Arena extends Phaser.State {
         console.log("Arena button clicked");
         if (this.currentTurn === 0) {
             // tom's turn
-            kapowWrapper.callOnServer('sendTurn', new MoveData(new Move(this.tom.player, this.harry.player, 10, 10), this.tom.player.jid, this.harry.player.jid));
+            kapowWrapper.callOnServer('sendTurn', new MoveData(new Move(this.tom.player, this.harry.player, 10, 10, this.tom.player.jid), this.tom.player.jid, this.harry.player.jid));
         } else {
             // harry's turn
-            kapowWrapper.callOnServer('sendTurn', new MoveData(new Move(this.tom.player, this.harry.player, 10, 10), this.harry.player.jid, this.tom.player.jid));
+            kapowWrapper.callOnServer('sendTurn', new MoveData(new Move(this.tom.player, this.harry.player, 10, 10, this.harry.player.jid), this.harry.player.jid, this.tom.player.jid));
         }
     }
 
@@ -77,6 +75,12 @@ class Arena extends Phaser.State {
         // 	opponent.kill();
         // 	this.fire();
         // }, null, this);
+    }
+
+    updateHealth(message){
+        if(message.data.sendBy == this.tom.player.jid){
+            this.harry.health
+        }
     }
 
 }

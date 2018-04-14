@@ -2,7 +2,8 @@
 import KapowWrapper from "../kapow/KapowWrapper";
 
 class GameController {
-    constructor() {
+    constructor(game) {
+        this.game = game;
     }
 
     initNewGame() {
