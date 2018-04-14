@@ -139,12 +139,6 @@ class Arena extends Phaser.State {
     }
 
     opponentMove(moveMessage) {
-        if (moveMessage.data.angle >= 0) {
-            moveMessage.data.angle = 180 - moveMessage.data.angle;
-        } else {
-            moveMessage.data.angle = 180 + moveMessage.data.angle;
-        }
-
         this.playMove(this.secondPlayerWeapon, moveMessage.data.power, moveMessage.data.angle);
     }
 
@@ -189,7 +183,10 @@ class Arena extends Phaser.State {
     setTurn() {
         var self = this;
         kapowWrapper.getRoomInfo(function (room) {
-            if (room.nextPlayerId === self.playerID) {
+            if (!room.nextPlayerId) {
+                console.log("No next player set");
+            }
+            else if (room.nextPlayerId === self.playerID) {
                 self.enableTurn();
             } else {
                 self.disableTurn();
