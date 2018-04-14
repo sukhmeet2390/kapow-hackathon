@@ -5,14 +5,18 @@ import ArenaController from "./ArenaController";
 let EventHandler = {
     init() {
         console.log("Event handler init");
-
         let game = window.phasergame;
+        this.game = window.phasergame;
         this.gameController = new GameController(game);
         this.arenaController = new ArenaController(game);
         pubsub.subscribe("menu/playButtonClicked", this.gameController.initNewGame);
         pubsub.subscribe("kapow/game/messageReceived", this._handleMessage);
+        pubsub.subscribe("kapow/game/turnChange", this._handleTurnChange);
     },
-
+    _handleTurnChange(player) {
+        console.log("Handle turn change ", player);
+        window.phasergame.state.states.Arena.turnChange(player);
+    },
     _handleMessage(message) {
         console.log("Message received", message);
         switch (message.type) {
@@ -23,7 +27,6 @@ let EventHandler = {
                 this.arenaController.endGame(message);
                 break;
             case "turn_change":
-                this.arenaController.handleTurnChange(message);
                 break;
             case "affiliation_change":
                 break;

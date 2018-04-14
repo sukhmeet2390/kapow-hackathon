@@ -17,7 +17,7 @@ class Arena extends Phaser.State {
     }
 
     create() {
-        this.health1 = new PhaserUi.ProgressBar(this.game, 730, 70, PhaserUi.Graphics.roundedRectBmd, 4, '' );
+        this.health1 = new PhaserUi.ProgressBar(this.game, 730, 70, PhaserUi.Graphics.roundedRectBmd, 4, '');
         this.health2 = new PhaserUi.ProgressBar(this.game, 730, 70, PhaserUi.Graphics.roundedRectBmd, 4, '');
         this.health1.x = 400;
         this.health1.y = 100;
@@ -27,7 +27,7 @@ class Arena extends Phaser.State {
         this.health2.y = 100;
         this.health2.progress = 1;
 
-        this.wall = this.game.add.sprite(910,600, 'wall');
+        this.wall = this.game.add.sprite(910, 600, 'wall');
 
         this.addPlayers();
     }
@@ -43,49 +43,50 @@ class Arena extends Phaser.State {
         this.firstPlayerSilhouette.body.immovable = true;
         this.secondPlayerSilhouette.body.immovable = true;
         this.initialise();
-        this.setTurn();
+
     }
 
     update() {
         var self = this;
-        this.game.physics.arcade.collide(this.firstPlayerWeapon, this.secondPlayerSilhouette, function(weapon, player) {
+        this.game.physics.arcade.collide(this.firstPlayerWeapon, this.secondPlayerSilhouette, function (weapon, player) {
             weapon.kill();
             console.log("You hit opponent!");
-            this._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, self.secondPlayerSilhouette,  null);
+            this._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, self.secondPlayerSilhouette, null);
         });
 
-        this.game.physics.arcade.collide(this.secondPlayerWeapon, this.firstPlayerSilhouette, function(weapon, player) {
+        this.game.physics.arcade.collide(this.secondPlayerWeapon, this.firstPlayerSilhouette, function (weapon, player) {
             weapon.kill();
             console.log("Opponent hit me!");
-            this._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, self.firstPlayerSilhouette,  null);
+            this._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, self.firstPlayerSilhouette, null);
         });
-        this.game.physics.arcade.collide(this.firstPlayerWeapon, this.wall, function(weapon, player){
+        this.game.physics.arcade.collide(this.firstPlayerWeapon, this.wall, function (weapon, player) {
             console.log("Hit wall");
             weapon.kill();
-            this._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, null,  true);
+            this._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, null, true);
         })
-        this.game.physics.arcade.collide(this.secondPlayerWeapon, this.wall, function(weapon, player){
+        this.game.physics.arcade.collide(this.secondPlayerWeapon, this.wall, function (weapon, player) {
             console.log("Hit wall");
             weapon.kill();
-            this._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, null,  true);
+            this._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, null, true);
         })
     }
-    _handleHit(hitBy, hitWeapon, hitTo, isWall){
-        if(isWall){
+
+    _handleHit(hitBy, hitWeapon, hitTo, isWall) {
+        if (isWall) {
             console.log("You hit the wall");
-        }else{
-            console.log("Player "+ hitBy+ " hit using "+ hitWeapon + " and hitted "+ hitTo);
+        } else {
+            console.log("Player " + hitBy + " hit using " + hitWeapon + " and hitted " + hitTo);
         }
     }
 
     initialise() {
         this.disableTurn();
         var self = this;
-        kapowWrapper.getUserInfo(function(user) {
+        kapowWrapper.getUserInfo(function (user) {
             console.log("Found userInfo ", user, self);
             self.playerID = user.player.id;
             self.owner = user.player;
-            kapowWrapper.getRoomInfo(function(room) {
+            kapowWrapper.getRoomInfo(function (room) {
                 console.log("Found room info ", room);
                 for (var i = 0; i < 2; i++) {
                     if (room.players[i].id !== self.playerID) {
@@ -95,7 +96,8 @@ class Arena extends Phaser.State {
                 console.log(self);
                 console.log("UserJID : " + self.playerID);
                 console.log("opponentJID : " + self.opponentID);
-                // self.getPlayers();
+                self.getPlayers();
+                self.setTurn();
             });
         });
     }
@@ -118,7 +120,7 @@ class Arena extends Phaser.State {
 
     sendChoice(choice) {
         kapowWrapper.callOnServer('sendData', new MoveData(choice, this.playerID, this.opponentID),
-            function() {
+            function () {
                 console.log("Character choose turn sent!");
             });
     }
@@ -163,7 +165,7 @@ class Arena extends Phaser.State {
     }
 
     setTurn() {
-        kapowWrapper.getRoomInfo(function(room) {
+        kapowWrapper.getRoomInfo(function (room) {
             if (room.nextPlayerId === this.playerID) {
                 this.enableTurn();
             } else {
@@ -211,17 +213,18 @@ class Arena extends Phaser.State {
         return 2 * Math.sqrt(dx * dx + dy * dy);
     }
 
-    updateHealth1(value){
+    updateHealth1(value) {
         let progress = this.health1.progress;
-        this.health1.progress =  progress - value;
-        if(this.health1.progress < 0.1){
+        this.health1.progress = progress - value;
+        if (this.health1.progress < 0.1) {
             console.log('U die', this.health1.progress);
         }
     }
-    updateHealth2(value){
+
+    updateHealth2(value) {
         let progress = this.health2.progress;
-        this.health2.progress =  progress - value;
-        if(this.health2.progress < 0.1){
+        this.health2.progress = progress - value;
+        if (this.health2.progress < 0.1) {
             console.log('U die', this.health2.progress);
         }
     }
