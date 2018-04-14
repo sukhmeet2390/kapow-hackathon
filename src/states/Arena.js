@@ -49,6 +49,9 @@ class Arena extends Phaser.State {
         this.firstPlayerWeaponTransparent.alpha = 0.4;
         this.firstPlayerWeaponTransparent.input.enableDrag(true);
         this.firstPlayerWeaponTransparent.events.onDragStop.add(this.dragFinished, this, 0, this.firstPlayerWeapon);
+
+        this.firstPlayerSilhouette.body.immovable = true;
+        this.secondPlayerSilhouette.body.immovable = true;
     }
 
     update() {
