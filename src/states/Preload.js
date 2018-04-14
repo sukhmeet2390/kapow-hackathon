@@ -33,7 +33,7 @@ class Preload extends Phaser.State {
             if (self.loading.progress >= 0.999999) {
                 console.log("Loading finished, calling Menu state");
                 clearTimeout(id);
-                self.game.state.start("Menu");
+                self.game.state.start("Arena");
             }
         }, 200);
     }

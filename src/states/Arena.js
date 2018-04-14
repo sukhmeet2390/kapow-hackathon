@@ -6,17 +6,50 @@ import MoveData from "../model/MoveData";
 class Arena extends Phaser.State {
 
     preload() {
+        this.game.load.image('tom', 'assets/tom.png');
+        this.game.load.image('harry', 'assets/harry.png');
+        this.game.load.image('projectile', 'assets/projectile.png');
+
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.physics.arcade.gravity.y = 500;
     }
 
     create() {
+        this.addPlayers();
+    }
+
+    addPlayers() {
+        this.secondPlayerSilhouette = this.game.add.sprite(1629, 690, 'tom');
+        this.firstPlayerSilhouette = this.game.add.sprite(80, 690, 'harry');
+
+        this.firstPlayerWeapon = this.game.add.sprite(300, 600, 'projectile');
+        this.firstPlayerWeaponTransparent = this.game.add.sprite(300, 600, 'projectile');
+        this.game.physics.enable([this.firstPlayerWeapon, this.firstPlayerWeaponTransparent, 
+            this.firstPlayerSilhouette, this.secondPlayerSilhouette], Phaser.Physics.ARCADE);
+
+        this.secondPlayerSilhouette.body.allowGravity = false;
+        this.firstPlayerSilhouette.body.allowGravity = false;   
+        this.firstPlayerWeaponTransparent.body.allowGravity = false;
+        this.firstPlayerWeapon.body.allowGravity = false;
+        this.firstPlayerWeaponTransparent.inputEnabled = true;
+        this.firstPlayerWeaponTransparent.alpha = 0.4;
+        this.firstPlayerWeaponTransparent.input.enableDrag(true);
+        this.firstPlayerWeaponTransparent.events.onDragStop.add(this.dragFinished, this, 0, this.firstPlayerWeapon);
     }
 
     update() {
+        this.game.physics.arcade.collide(this.firstPlayerWeapon, this.secondPlayerSilhouette, function(weapon, player) {
+            weapon.kill();
+            console.log("You hit opponent!");
+        });
+
+        this.game.physics.arcade.collide(this.secondPlayerWeapon, this.firstPlayerSilhouette, function(weapon, player) {
+            weapon.kill();
+            console.log("Opponent hit me!");
+        })
     }
 
-    init() {
+    initialise() {
         this.disableTurn();
         this.myPlayer = null;
         this.opponentPlayer = null;
@@ -55,7 +88,7 @@ class Arena extends Phaser.State {
     }
 
     sendChoice(choice) {
-        kapowWrapper.callOnServer('sendTurn', new MoveData(choice, this.playerID, this.opponentID),
+        kapowWrapper.callOnServer('sendData', new MoveData(choice, this.playerID, this.opponentID),
             function() {
                 console.log("Character choose turn sent!");
             });
@@ -65,16 +98,16 @@ class Arena extends Phaser.State {
     }
 
     sendMove(power, angle) {
-        let move = new Move(this.myPlayer, this.opponentPlayer, power, angle, this.myPlayer.player.jid);
-        let moveData = new MoveData(move, this.myPlayer.player.jid, this.opponentPlayer.player.jid);
-        kapowWrapper.callOnServer('sendTurn', moveData);
-        this.playMove(move);
+        // let move = new Move(this.myPlayer, this.opponentPlayer, power, angle, this.myPlayer.player.jid);
+        // let moveData = new MoveData(move, this.myPlayer.player.jid, this.opponentPlayer.player.jid);
+        // kapowWrapper.callOnServer('sendTurn', moveData);
+        this.playMove(this.firstPlayerWeapon, power, angle);
     }
 
-    playMove(move) {
+    playMove(weapon, power, angle) {
         console.log("Emulating move");
-        // this.game.physics.arcade.velocityFromAngle(angle, power, this.dragAndShoot.body.velocity);
-        // this.dragAndShoot.body.allowGravity = true;
+        this.game.physics.arcade.velocityFromAngle(angle, power, weapon.body.velocity);
+        weapon.body.allowGravity = true;
     }
 
     enableTurn() {
@@ -92,7 +125,7 @@ class Arena extends Phaser.State {
         let power = this.getDistance(initialObject.position, draggedObject.position);
         let angle = this.getAngle(initialObject.position, draggedObject.position);
         console.log("Power : " + power + " and Angle : " + angle);
-        sendMove(power, angle);
+        this.sendMove(power, angle);
     }
 
     getAngle(initialPosition, finalPosition) {
