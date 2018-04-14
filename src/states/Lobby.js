@@ -3,8 +3,13 @@
 import kapowWrapper from "../kapow/KapowWrapper"
 import CharacterChosen from "../model/CharacterChosen";
 import MoveData from "../model/MoveData";
+import * as PhaserUi from "phaser-ui";
 
 class Lobby extends Phaser.State {
+    someFunc(){
+
+
+    }
 
     preload() {
         console.log("Lobby Preload");
@@ -55,7 +60,6 @@ class Lobby extends Phaser.State {
     // }
 
     create() {
-
         var block1 = this.game.add.image(0, 0, "block1");
         var block2 = this.game.add.image(0, 0, "block2");
 

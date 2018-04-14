@@ -13,7 +13,7 @@ class StartPlay extends Phaser.State {
     }
 
     actionOnClick(){
-        this.game.state.start("Lobby");
+        this.game.state.start("Arena");
     }
 
 }

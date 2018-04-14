@@ -2,6 +2,7 @@ import kapowWrapper from "../kapow/KapowWrapper";
 import HistoryWrapper from "../kapow/HistoryWrapper";
 import Move from "../model/Move";
 import MoveData from "../model/MoveData";
+import * as PhaserUi from "phaser-ui";
 
 class Arena extends Phaser.State {
 
@@ -11,6 +12,18 @@ class Arena extends Phaser.State {
     }
 
     create() {
+        this.health1 = new PhaserUi.ProgressBar(this.game, 730, 70, PhaserUi.Graphics.roundedRectBmd, 4, '' );
+        this.health2 = new PhaserUi.ProgressBar(this.game, 730, 70, PhaserUi.Graphics.roundedRectBmd, 4, '');
+        this.health1.x = 400;
+        this.health1.y = 100;
+        this.health1.progress = 1;
+
+        this.health2.x = 1500;
+        this.health2.y = 100;
+        this.health2.progress = 1;
+
+        let button = this.game.add.button(this.game.world.centerX, this.game.world.centerY, 'button', this.actionOnClick, this, 2, 1, 0);
+        button.anchor.setTo(0.5);
     }
 
     update() {
@@ -26,7 +39,7 @@ class Arena extends Phaser.State {
             self.playerID = user.player.id;
             kapowWrapper.getRoomInfo(function(room) {
                 for (var i = 0; i < 2; i++) {
-                    if (room.players[i] !== self.playerID) {
+                    if (room.players[i] !== playerID) {
                         self.opponentID = room.players[i];
                     }
                 }
@@ -111,6 +124,21 @@ class Arena extends Phaser.State {
         let dx = finalPosition.x - initialPosition.x;
         let dy = finalPosition.y - initialPosition.y;
         return 2 * Math.sqrt(dx * dx + dy * dy);
+    }
+
+    updateHealth1(value){
+        let progress = this.health1.progress;
+        this.health1.progress =  progress - value;
+        if(this.health1.progress < 0.1){
+            console.log('U die', this.health1.progress);
+        }
+    }
+    updateHealth2(value){
+        let progress = this.health2.progress;
+        this.health2.progress =  progress - value;
+        if(this.health2.progress < 0.1){
+            console.log('U die', this.health2.progress);
+        }
     }
 }
 
