@@ -1,16 +1,12 @@
 import * as PhaserUi from 'phaser-ui';
+import kapowWrapper from "../kapow/KapowWrapper";
 
 class Preload extends Phaser.State {
 
     preload() {
-        /* Preload required assets */
-        //this.game.load.image('myImage', 'assets/my-image.png');
-        //this.game.load.audio('myAudio', 'assets/my-audio.wav');
-        //this.game.load.atlas('myAtlas', 'assets/my-atlas.png', 'assets/my-atlas.json');
-        //this.game.load.crossOrigin = "anonymous";
-
         this.game.load.image('button', 'assets/playGame.png');
         this.game.load.image('bg', 'assets/playGame.png');
+
     }
 
     create() {
@@ -34,6 +30,16 @@ class Preload extends Phaser.State {
                 console.log("Loading finished, calling Menu state");
                 clearTimeout(id);
                 self.game.state.start("Arena");
+                kapowWrapper.getRoomInfo(function (room) {
+                    if (!room) {
+                        console.log("No Room FOund");
+                        self.game.state.start("Menu");
+                    } else {
+                        console.log("Found room. Going to arena ", room);
+                        self.game.state.start("Arena");
+                    }
+                });
+
             }
         }, 200);
     }

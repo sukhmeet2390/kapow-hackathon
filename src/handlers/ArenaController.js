@@ -3,7 +3,7 @@
 class ArenaController{
     constructor(game){
         this.game = game;
-
+        return this;
     }
 
     handleMove(message){

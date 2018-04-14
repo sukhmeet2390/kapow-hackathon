@@ -58,6 +58,7 @@ window.game = {
     onLoad: function (room) {
         console.log("Room returned by kapow onLoad - " + JSON.stringify(room));
         pubsub.publish("kapow/game/loaded", [room]);
+
     },
     onPause: function () {
         console.log(':: On Pause Triggered. ::');

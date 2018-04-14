@@ -3,13 +3,18 @@ import GameController from "./GameControllers";
 import ArenaController from "./ArenaController";
 
 let EventHandler = {
-    init(game) {
+    init() {
+        console.log("Event handler init");
+
+        let game = window.phasergame;
         this.gameController = new GameController(game);
         this.arenaController = new ArenaController(game);
         pubsub.subscribe("menu/playButtonClicked", this.gameController.initNewGame);
-        pubsub.subscribe("kapow/game/messageReceived", this._handleMessage)
+        pubsub.subscribe("kapow/game/messageReceived", this._handleMessage);
     },
+
     _handleMessage(message) {
+        console.log("Message received", message);
         switch (message.type) {
             case "move":
                 this.arenaController.handleMove(message);

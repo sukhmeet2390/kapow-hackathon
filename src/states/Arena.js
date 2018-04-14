@@ -52,6 +52,7 @@ class Arena extends Phaser.State {
 
         this.firstPlayerSilhouette.body.immovable = true;
         this.secondPlayerSilhouette.body.immovable = true;
+        //this.initialise();
     }
 
     update() {
@@ -68,24 +69,25 @@ class Arena extends Phaser.State {
 
     initialise() {
         this.disableTurn();
-        this.myPlayer = null;
-        this.opponentPlayer = null;
         var self = this;
-
         kapowWrapper.getUserInfo(function(user) {
+            console.log("Found userInfo ", user, self);
             self.playerID = user.player.id;
+            self.owner = user.player;
             kapowWrapper.getRoomInfo(function(room) {
+                console.log("Found room info ", room);
                 for (var i = 0; i < 2; i++) {
-                    if (room.players[i] !== playerID) {
-                        self.opponentID = room.players[i];
+                    if (room.players[i].id !== self.playerID) {
+                        self.opponentID = room.players[i].id;
                     }
                 }
+                console.log(self);
+                console.log("UserJID : " + self.playerID);
+                console.log("opponentJID : " + self.opponentID);
+                self.getPlayers();
             });
         });
 
-        console.log("UserJID : " + this.playerID);
-        console.log("opponentJID : " + this.opponentID);
-        this.getPlayers();
     }
 
     getPlayers() {
@@ -115,9 +117,9 @@ class Arena extends Phaser.State {
     }
 
     sendMove(power, angle) {
-        // let move = new Move(this.myPlayer, this.opponentPlayer, power, angle, this.myPlayer.player.jid);
-        // let moveData = new MoveData(move, this.myPlayer.player.jid, this.opponentPlayer.player.jid);
-        // kapowWrapper.callOnServer('sendTurn', moveData);
+        let move = new Move(this.owner, this.opponentPlayer, power, angle, this.playerID);
+        let moveData = new MoveData(move, this.playerID, this.opponentID);
+        kapowWrapper.callOnServer('sendTurn', moveData);
         this.playMove(this.firstPlayerWeapon, power, angle);
     }
 

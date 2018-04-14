@@ -8,18 +8,17 @@ import GameOver from 'states/GameOver';
 class Game extends Phaser.Game {
 
     constructor() {
-        EvenHandler.init();
+
         super(1920, 1080, Phaser.AUTO);
         this.state.add('Preload', Preload, false);
         this.state.add('Menu', Menu, false);
         this.state.add('Lobby', Lobby, false);
         this.state.add('Arena', Arena, false);
         this.state.add('GameOver', GameOver, false);
-
+        EvenHandler.init();
         this.state.start('Preload');
 
     }
 
 }
-
-new Game();
+window.phasergame = new Game();

@@ -46,19 +46,6 @@ class Lobby extends Phaser.State {
         });
     }
 
-    // createSlider() {
-    //     this.chosenCharacter = 0;
-    //     kapowWrapper.getUserInfo(function (user) {
-    //         var chooserId = user.player.id;
-    //         let characterChosen = new CharacterChosen(chosenCharacter, chooserId);
-    //         kapowWrapper.callOnServer('sendTurn', new MoveData(characterChosen, chooserId,),
-    //             function () {
-    //                 console.log("Character choose turn sent!");
-    //                 self.game.state.start("Arena");
-    //             });
-    //     });
-    // }
-
     create() {
         var block1 = this.game.add.image(0, 0, "block1");
         var block2 = this.game.add.image(0, 0, "block2");
