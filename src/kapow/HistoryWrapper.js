@@ -10,7 +10,7 @@ let HistoryWrapper = {
         getAllMessages(function(messages) {
             let n = messages.length;
             for (var i = 0; i < n; i++) {
-                let message = messages[i];
+                let message = messages[n - i - 1];
                 if (message.type == "move" && message.data.type == "CharacterChosen" && message.data.chooserId == playerID) {
                     successCB(message);
                 }
@@ -22,7 +22,7 @@ let HistoryWrapper = {
         getAllMessages(function(messages) {
             let n = messages.length;
             for (var i = 0; i < n; i++) {
-                let message = messages[i];
+                let message = messages[n - i - 1];
                 if (message.type == "move" && message.data.type == "Move") {
                     successCB(message);
                 }
@@ -34,7 +34,7 @@ let HistoryWrapper = {
         getAllMessages(function(messages) {
             let n = messages.length;
             for (var i = 0; i < n; i++) {
-                let message = message[i];
+                let message = message[n - i - 1];
                 if (message.type == "outcome") {
                     successCB(message);
                 }
