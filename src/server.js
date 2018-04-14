@@ -69,9 +69,11 @@ var game = {
 
     onPlayerLeft: function (playerObj) {
     	console.log("SERVER onPlayerLeft called : " + playerObj);
-    	game.quitGame(playerObj.id, "left");
+    	game.quitGame(playerObj.id, "resignation");
     },
-
+	endGameOnServer: function(playerId){
+    		game.quitGame(playerId, 'result');
+	},
     quitGame: function(playerId, outcomeType) {
     	console.log("SERVER quitGame called for playerId : " + JSON.stringify(playerId) + " with outcomeType : " +  JSON.stringify(outcomeType));
     	var room = kapow.getRoomInfo();

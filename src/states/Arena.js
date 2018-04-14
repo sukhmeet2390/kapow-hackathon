@@ -3,6 +3,8 @@ import HistoryWrapper from "../kapow/HistoryWrapper";
 import Move from "../model/Move";
 import MoveData from "../model/MoveData";
 import * as PhaserUi from "phaser-ui";
+import Tom from "../model/Toms";
+import Harry from "../model/Harry";
 
 class Arena extends Phaser.State {
 
@@ -10,7 +12,7 @@ class Arena extends Phaser.State {
         this.game.load.image('tom', 'assets/tom.png');
         this.game.load.image('harry', 'assets/harry.png');
         this.game.load.image('wall', 'assets/wall.png');
-        this.game.load.image('projectile', 'assets/projectile.png');
+         this.game.load.image('projectile', 'assets/projectile.png');
 
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.physics.arcade.gravity.y = 500;
@@ -30,23 +32,29 @@ class Arena extends Phaser.State {
         this.wall = this.game.add.sprite(910, 600, 'wall');
 
         this.addPlayers();
+        this._isLoaded = false;
     }
 
     addPlayers() {
-        this.secondPlayerSilhouette = this.game.add.sprite(1629, 690, 'tom');
-        this.firstPlayerSilhouette = this.game.add.sprite(80, 690, 'harry');
-        this.game.physics.enable([this.firstPlayerSilhouette, this.secondPlayerSilhouette], Phaser.Physics.ARCADE);
+        var callback = function () {
+            this.secondPlayerSilhouette = new Tom(this.game, 1629, 690, 'tom', this.opponentID);
+            this.firstPlayerSilhouette = new Harry(this.game, 1629, 690, 'tom', this.playerID);
+            this.game.physics.enable([this.firstPlayerSilhouette, this.secondPlayerSilhouette], Phaser.Physics.ARCADE);
 
-        this.secondPlayerSilhouette.body.allowGravity = false;
-        this.firstPlayerSilhouette.body.allowGravity = false;
+            this.secondPlayerSilhouette.body.allowGravity = false;
+            this.firstPlayerSilhouette.body.allowGravity = false;
 
-        this.firstPlayerSilhouette.body.immovable = true;
-        this.secondPlayerSilhouette.body.immovable = true;
-        this.initialise();
+            this.firstPlayerSilhouette.body.immovable = true;
+            this.secondPlayerSilhouette.body.immovable = true;
+            this._isLoaded = true;
+        }.bind(this);
+
+        this.initialise(callback);
 
     }
 
     update() {
+        if (this._isLoaded === false) return true;
         var self = this;
 
         this.game.physics.arcade.collide(this.firstPlayerWeapon, this.secondPlayerSilhouette, function (weapon, player) {
@@ -60,7 +68,7 @@ class Arena extends Phaser.State {
             weapon.destroy();
             self._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, self.firstPlayerSilhouette, null, false);
         });
-        
+
         this.game.physics.arcade.collide(this.firstPlayerWeapon, this.wall, function (weapon, wall) {
             console.log("Hit wall");
             weapon.destroy();
@@ -75,20 +83,25 @@ class Arena extends Phaser.State {
     }
 
     _handleHit(hitBy, hitWeapon, hitTo, isWall, isFirstPlayer) {
-        if(isFirstPlayer === false){
+        if (isFirstPlayer === false) {
             this.setNextTurn(this.playerID);
-        }else{
+        } else {
             this.setNextTurn(this.opponentID);
         }
 
         if (isWall) {
             console.log("You hit the wall");
         } else {
-            console.log("Player " + JSON.stringify(hitBy) + " hit using " + JSON.stringify(hitWeapon) + " and hitted " + JSON.stringify(hitTo));
+            console.log("Player hit the other one ");
+            if (isFirstPlayer) {
+                this.updateHealth2(1)
+            } else {
+                this.updateHealth1(1);
+            }
         }
     }
 
-    initialise() {
+    initialise(callback) {
         var self = this;
         kapowWrapper.getUserInfo(function (user) {
             console.log("Found userInfo ", user, self);
@@ -104,8 +117,10 @@ class Arena extends Phaser.State {
                 console.log(self);
                 console.log("UserJID : " + self.playerID);
                 console.log("opponentJID : " + self.opponentID);
+                callback();
                 self.getPlayers();
                 self.setTurn();
+
             });
         });
     }
@@ -141,7 +156,7 @@ class Arena extends Phaser.State {
         this.firstPlayerWeaponTransparent.kill();
         let move = new Move(this.owner, this.opponentPlayer, power, angle, this.playerID);
         let moveData = new MoveData(move, this.playerID, this.opponentID);
-        kapowWrapper.callOnServer('sendTurn', moveData, function(){
+        kapowWrapper.callOnServer('sendTurn', moveData, function () {
             console.log("Send turn success");
         });
         this.playMove(this.firstPlayerWeapon, power, angle);
@@ -164,7 +179,7 @@ class Arena extends Phaser.State {
 
     enableTurn() {
         this.killAllWeapons();
-        this.firstPlayerWeapon = this.game.add.sprite(300, 600, 'projectile');        
+        this.firstPlayerWeapon = this.game.add.sprite(300, 600, 'projectile');
         this.firstPlayerWeaponTransparent = this.game.add.sprite(300, 600, 'projectile');
         this.game.physics.enable([this.firstPlayerWeapon, this.firstPlayerWeaponTransparent], Phaser.Physics.ARCADE);
         this.firstPlayerWeaponTransparent.body.allowGravity = false;
@@ -213,6 +228,7 @@ class Arena extends Phaser.State {
     setTurn() {
         var self = this;
         kapowWrapper.getRoomInfo(function (room) {
+            self.room = room;
             if (!room.nextPlayerId) {
                 console.log("No next player set");
             }
@@ -235,7 +251,20 @@ class Arena extends Phaser.State {
 
     endGame(message) {
         console.log("End game called : " + JSON.stringify(message));
-        this.game.state.start("GameOver");
+        var self = this;
+        if (this.winner === this.firstPlayerSilhouette) {
+            var winnerId = this.firstPlayerSilhouette.player.jid;
+            var loserId = this.secondPlayerSilhouette.player.jid;
+            console.log("Winner", winnerId);
+            console.log("loser", loserId);
+            kapowWrapper.callOnServer('endGameOnServer', loserId, function () {
+                console.log("Ranks success");
+                self.game.state.start("GameOver");
+            });
+        } else {
+            this.game.state.start("GameOver");
+        }
+
     }
 
     dragFinished(draggedObject, pointer, initialObject) {
@@ -267,16 +296,23 @@ class Arena extends Phaser.State {
     updateHealth1(value) {
         let progress = this.health1.progress;
         this.health1.progress = progress - value;
+        this.firstPlayerSilhouette.player.health = progress - value;
         if (this.health1.progress < 0.1) {
             console.log('U die', this.health1.progress);
+            this.winner = this.secondPlayerSilhouette;
+            this.endGame();
+
         }
     }
 
     updateHealth2(value) {
         let progress = this.health2.progress;
         this.health2.progress = progress - value;
+        this.secondPlayerSilhouette.player.health = progress - value;
         if (this.health2.progress < 0.1) {
             console.log('U die', this.health2.progress);
+            this.winner = this.firstPlayerSilhouette;
+            this.endGame();
         }
     }
 }

@@ -12,6 +12,10 @@ let KapowWrapper = {
         if (!errBack) errBack = this._errback;
         kapow.startSoloGame(successBack, errBack);
     },
+    endGame(ranks, roomId, successBack, errBack) {
+        if (!errBack) errBack = this._errback;
+        kapow.endGame(ranks, roomId, successBack, errBack);
+    },
     displayActiveRoms() {
         kapow.displayActiveRooms();
     },
