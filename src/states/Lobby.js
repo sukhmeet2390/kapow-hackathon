@@ -17,10 +17,6 @@ class Lobby extends Phaser.State {
         this.load.image("block2", "assets/babuji.png");
         this.load.image("bg", "assets/black.png");
         this.load.image("play", "assets/bt-battle.png");
-
-        // this.load.image("arrowLeft", "assets/lib/arrow1.png");
-        // this.load.image("arrowRight", "assets/lib/arrow2.png");
-        //this.load.image("box", "assets/lib/box.png");
         this.slider = new phaseSlider(this.game);
     }
 
@@ -47,12 +43,11 @@ class Lobby extends Phaser.State {
     }
 
     create() {
-        var block1 = this.game.add.image(0, 0, "block1");
-        var block2 = this.game.add.image(0, 0, "block2");
+        let block1 = this.game.add.image(0, 0, "block1");
+        let block2 = this.game.add.image(0, 0, "block2");
 
         this.slider.createSlider({
             customSliderBG: false,
-            sliderBG: "0x000000",
             mode: "horizontal",
             sliderBGAlpha: 0.5,
             width: this.game.width,
@@ -61,8 +56,8 @@ class Lobby extends Phaser.State {
             y: 0,
             objects: [block1, block2]
         });
-        window.slider = this.slider;
-        window.console.log(this.slider);
+        this.slider.removeItemAt(0);
+        console.log(this.slider);
 
 
         var btn = this.game.add.image(670, 892, "play");

@@ -5,8 +5,6 @@ class Preload extends Phaser.State {
 
     preload() {
         this.game.load.image('button', 'assets/playGame.png');
-        this.game.load.image('bg', 'assets/playGame.png');
-
     }
 
     create() {
@@ -32,7 +30,7 @@ class Preload extends Phaser.State {
                 self.game.state.start("Arena");
                 kapowWrapper.getRoomInfo(function (room) {
                     if (!room) {
-                        console.log("No Room FOund");
+                        console.log("No Room Found");
                         self.game.state.start("Menu");
                     } else {
                         console.log("Found room. Going to arena ", room);
@@ -41,7 +39,7 @@ class Preload extends Phaser.State {
                 });
 
             }
-        }, 200);
+        }, 150);
     }
 
     update() {
