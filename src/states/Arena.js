@@ -151,6 +151,7 @@ class Arena extends Phaser.State {
     enableTurn() {
         this.firstPlayerWeapon = this.game.add.sprite(300, 600, 'projectile');
         this.firstPlayerWeaponTransparent = this.game.add.sprite(300, 600, 'projectile');
+        this.game.physics.enable([this.firstPlayerWeapon, this.firstPlayerWeaponTransparent], Phaser.Physics.ARCADE);
         this.firstPlayerWeaponTransparent.body.allowGravity = false;
         this.firstPlayerWeapon.body.allowGravity = false;
         this.firstPlayerWeaponTransparent.inputEnabled = true;
@@ -161,6 +162,7 @@ class Arena extends Phaser.State {
 
     disableTurn() {
         this.secondPlayerWeapon = this.game.add.sprite(1500, 600, 'projectile');
+        this.game.physics.enable([this.secondPlayerWeapon], Phaser.Physics.ARCADE);
         this.secondPlayerWeapon.body.allowGravity = false;
     }
 
