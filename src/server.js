@@ -1,8 +1,5 @@
 var mysql = require('mysql');
 
-const GAME_CONST = {
-};
-
 console.log("SERVER JS!");
 
 var game = {
@@ -13,11 +10,20 @@ var game = {
 
     onPlayerJoined: function (playerObj) {
     	console.log("SERVER onPlayerJoined called : " + JSON.stringify(playerObj));
+    	var createMoveObject = function(data, playerId){
+            var room = kapow.getRoomInfo();
+            var opponent = (room.players[0] === playerId) ? room.players[1] : room.players[0];
+            var moveObj = {};
+            moveObj["move"] = data;
+            moveObj["player"] = playerId;
+            moveObj["opponent"] = opponent;
+            return moveObj;
+		};
         var move = createMoveObject("", playerObj.id);
-        sendTurn(move);
+        game.sendTurn(move);
         // kapow.return();
     },
-    createMoveObject(data, playerId) {
+    createMoveObject: function(data, playerId) {
         var room = kapow.getRoomInfo();
         var opponent = (room.players[0] === playerId) ? room.players[1] : room.players[0];
         var moveObj = {};
@@ -58,12 +64,12 @@ var game = {
 
     resignationRequest: function (move) {
     	console.log("SERVER resignationRequest called : " + JSON.stringify(move));
-    	quitGame(move.player, "resignation");
+    	game.quitGame(move.player, "resignation");
     },
 
     onPlayerLeft: function (playerObj) {
     	console.log("SERVER onPlayerLeft called : " + playerObj);
-    	quitGame(playerObj.id, "left");
+    	game.quitGame(playerObj.id, "left");
     },
 
     quitGame: function(playerId, outcomeType) {
@@ -74,8 +80,8 @@ var game = {
         	ranking[0] = 2;
         	ranking[1] = 1;
         }
-        var outcome = createOutcome(room.players, ranking, outcomeType);
-        endGame(room, outcome);
+        var outcome = game.createOutcome(room.players, ranking, outcomeType);
+        game.endGame(room, outcome);
     },
 
     createOutcome: function(players, rankings, outcomeType) {
