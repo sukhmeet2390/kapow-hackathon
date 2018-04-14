@@ -140,6 +140,12 @@ class Arena extends Phaser.State {
     }
 
     opponentMove(moveMessage) {
+        if (moveMessage.data.angle >= 0) {
+            moveMessage.data.angle = 180 - moveMessage.data.angle;
+        } else {
+            moveMessage.data.angle = 180 + moveMessage.data.angle;
+        }
+
         this.playMove(this.secondPlayerWeapon, moveMessage.data.power, moveMessage.data.angle);
         this.enableTurn();
     }
@@ -151,6 +157,8 @@ class Arena extends Phaser.State {
     }
 
     enableTurn() {
+        this.killWeapon(this.firstPlayerWeapon);
+        this.killWeapon(this.firstPlayerWeaponTransparent);
         this.firstPlayerWeapon = this.game.add.sprite(300, 600, 'projectile');
         this.firstPlayerWeaponTransparent = this.game.add.sprite(300, 600, 'projectile');
         this.game.physics.enable([this.firstPlayerWeapon, this.firstPlayerWeaponTransparent], Phaser.Physics.ARCADE);
@@ -163,9 +171,16 @@ class Arena extends Phaser.State {
     }
 
     disableTurn() {
+        this.killWeapon(this.secondPlayerWeapon);
         this.secondPlayerWeapon = this.game.add.sprite(1500, 600, 'projectile');
         this.game.physics.enable([this.secondPlayerWeapon], Phaser.Physics.ARCADE);
         this.secondPlayerWeapon.body.allowGravity = false;
+    }
+
+    killWeapon(weapon) {
+        if (weapon !== null) {
+            weapon.kill();
+        }
     }
 
     setTurn() {
