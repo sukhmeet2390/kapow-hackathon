@@ -9,6 +9,7 @@ class Arena extends Phaser.State {
     preload() {
         this.game.load.image('tom', 'assets/tom.png');
         this.game.load.image('harry', 'assets/harry.png');
+        this.game.load.image('wall', 'assets/wall.png');
         this.game.load.image('projectile', 'assets/projectile.png');
 
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -26,8 +27,7 @@ class Arena extends Phaser.State {
         this.health2.y = 100;
         this.health2.progress = 1;
 
-        let button = this.game.add.button(this.game.world.centerX, this.game.world.centerY, 'button', this.actionOnClick, this, 2, 1, 0);
-        button.anchor.setTo(0.5);
+        this.wall = this.game.add.sprite(910,600, 'wall');
 
         this.addPlayers();
     }
@@ -56,15 +56,35 @@ class Arena extends Phaser.State {
     }
 
     update() {
+        var self = this;
         this.game.physics.arcade.collide(this.firstPlayerWeapon, this.secondPlayerSilhouette, function(weapon, player) {
             weapon.kill();
             console.log("You hit opponent!");
+            this._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, self.secondPlayerSilhouette,  null);
         });
 
         this.game.physics.arcade.collide(this.secondPlayerWeapon, this.firstPlayerSilhouette, function(weapon, player) {
             weapon.kill();
             console.log("Opponent hit me!");
+            this._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, self.firstPlayerSilhouette,  null);
+        });
+        this.game.physics.arcade.collide(this.firstPlayerWeapon, this.wall, function(weapon, player){
+            console.log("Hit wall");
+            weapon.kill();
+            this._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, null,  true);
         })
+        this.game.physics.arcade.collide(this.secondPlayerWeapon, this.wall, function(weapon, player){
+            console.log("Hit wall");
+            weapon.kill();
+            this._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, null,  true);
+        })
+    }
+    _handleHit(hitBy, hitWeapon, hitTo, isWall){
+        if(isWall){
+            console.log("You hit the wall");
+        }else{
+            console.log("Player "+ hitBy+ " hit using "+ hitWeapon + " and hitted "+ hitTo);
+        }
     }
 
     initialise() {
