@@ -30,6 +30,7 @@ class Arena extends Phaser.State {
         this.health2.progress = 1;
 
         this.wall = this.game.add.sprite(910, 600, 'wall');
+        this.game.physics.enable([this.wall], Phaser.Physics.ARCADE);
 
         this.addPlayers();
         this._isLoaded = false;
