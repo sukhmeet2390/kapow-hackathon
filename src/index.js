@@ -8,7 +8,6 @@ import GameOver from 'states/GameOver';
 class Game extends Phaser.Game {
 
     constructor() {
-
         super(1920, 1080, Phaser.AUTO);
         this.state.add('Preload', Preload, false);
         this.state.add('Menu', Menu, false);

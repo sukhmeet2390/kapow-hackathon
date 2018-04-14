@@ -49,33 +49,38 @@ class Arena extends Phaser.State {
     update() {
         var self = this;
         this.game.physics.arcade.collide(this.firstPlayerWeapon, this.secondPlayerSilhouette, function (weapon, player) {
-            weapon.kill();
+            weapon.destroy();
             console.log("You hit opponent!");
-            self._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, self.secondPlayerSilhouette, null);
+            self._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, self.secondPlayerSilhouette, null, true);
         });
 
         this.game.physics.arcade.collide(this.secondPlayerWeapon, this.firstPlayerSilhouette, function (weapon, player) {
-            weapon.kill();
+            weapon.destroy();
             console.log("Opponent hit me!");
-            self._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, self.firstPlayerSilhouette, null);
+            self._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, self.firstPlayerSilhouette, null, false);
         });
         this.game.physics.arcade.collide(this.firstPlayerWeapon, this.wall, function (weapon, player) {
             console.log("Hit wall");
-            weapon.kill();
-            self._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, null, true);
+            weapon.destroy();
+            self._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, null, true, true);
         })
         this.game.physics.arcade.collide(this.secondPlayerWeapon, this.wall, function (weapon, player) {
             console.log("Hit wall");
-            weapon.kill();
-            self._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, null, true);
+            weapon.destroy();
+            self._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, null, true, false);
         })
     }
 
-    _handleHit(hitBy, hitWeapon, hitTo, isWall) {
+    _handleHit(hitBy, hitWeapon, hitTo, isWall, isFirstPlayer) {
+        if(isFirstPlayer){
+            this.disableTurn();
+        }else{
+            this.enableTurn();
+        }
         if (isWall) {
             console.log("You hit the wall");
         } else {
-            console.log("Player " + hitBy + " hit using " + hitWeapon + " and hitted " + hitTo);
+            console.log("Player " + JSON.stringify(hitBy) + " hit using " + JSON.stringify(hitWeapon) + " and hitted " + JSON.stringify(hitTo));
         }
     }
 
@@ -143,7 +148,7 @@ class Arena extends Phaser.State {
     }
 
     playMove(weapon, power, angle) {
-        console.log("Emulating move");
+        console.log("Emulating move", this.game, angle, power, weapon.body.velocity);
         this.game.physics.arcade.velocityFromAngle(angle, power, weapon.body.velocity);
         weapon.body.allowGravity = true;
     }
@@ -171,13 +176,13 @@ class Arena extends Phaser.State {
     }
 
     killAllWeapons() {
-        this.killWeapon(this.firstPlayerWeapon);
-        this.killWeapon(this.firstPlayerWeaponTransparent);
-        this.killWeapon(this.secondPlayerWeapon);
+        // this.killWeapon(this.firstPlayerWeapon);
+        // this.killWeapon(this.firstPlayerWeaponTransparent);
+        // this.killWeapon(this.secondPlayerWeapon);
     }
 
     killWeapon(weapon) {
-        weapon && weapon.kill();
+        weapon && weapon.destroy();
     }
 
     setTurn() {
@@ -196,11 +201,11 @@ class Arena extends Phaser.State {
 
     turnChange(player) {
         console.log("Turn change received in arena : " + JSON.stringify(player));
-        if (player === this.playerID) {
-            this.enableTurn();
-        } else {
-            this.disableTurn();
-        }
+        // if (player === this.playerID) {
+        //     this.enableTurn();
+        // } else {
+        //     this.disableTurn();
+        // }
     }
 
     endGame(message) {
