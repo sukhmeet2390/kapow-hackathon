@@ -136,7 +136,6 @@ class Arena extends Phaser.State {
             console.log("Send turn success");
         });
         this.playMove(this.firstPlayerWeapon, power, angle);
-        this.disableTurn();
     }
 
     opponentMove(moveMessage) {
@@ -147,7 +146,6 @@ class Arena extends Phaser.State {
         }
 
         this.playMove(this.secondPlayerWeapon, moveMessage.data.power, moveMessage.data.angle);
-        this.enableTurn();
     }
 
     playMove(weapon, power, angle) {
@@ -157,9 +155,9 @@ class Arena extends Phaser.State {
     }
 
     enableTurn() {
-        this.killWeapon(this.firstPlayerWeapon);
-        this.killWeapon(this.firstPlayerWeaponTransparent);
+        this.killAllWeapons();
         this.firstPlayerWeapon = this.game.add.sprite(300, 600, 'projectile');
+        this.firstPlayerWeapon.outOfBoundsKill = true;
         this.firstPlayerWeaponTransparent = this.game.add.sprite(300, 600, 'projectile');
         this.game.physics.enable([this.firstPlayerWeapon, this.firstPlayerWeaponTransparent], Phaser.Physics.ARCADE);
         this.firstPlayerWeaponTransparent.body.allowGravity = false;
@@ -171,16 +169,21 @@ class Arena extends Phaser.State {
     }
 
     disableTurn() {
-        this.killWeapon(this.secondPlayerWeapon);
+        this.killAllWeapons();
         this.secondPlayerWeapon = this.game.add.sprite(1500, 600, 'projectile');
+        this.secondPlayerWeapon.outOfBoundsKill = true;
         this.game.physics.enable([this.secondPlayerWeapon], Phaser.Physics.ARCADE);
         this.secondPlayerWeapon.body.allowGravity = false;
     }
 
+    killAllWeapons() {
+        this.killWeapon(this.firstPlayerWeapon);
+        this.killWeapon(this.firstPlayerWeaponTransparent);
+        this.killWeapon(this.secondPlayerWeapon);
+    }
+
     killWeapon(weapon) {
-        if (weapon !== null) {
-            weapon.kill();
-        }
+        weapon && weapon.kill();
     }
 
     setTurn() {
