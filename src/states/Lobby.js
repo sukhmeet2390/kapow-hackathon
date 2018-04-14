@@ -19,26 +19,6 @@ class Lobby extends Phaser.State {
         this.slider = new phaseSlider(this.game);
     }
 
-    onClick() {
-        console.log("Play with friends clicked!");
-        var self = this;
-        kapowWrapper.startGameWithFriends(function() {
-            console.log("Starting game with friends!");
-            self.sendChoices(self.chosenCharacter);
-        },
-        function(error) {
-            console.log(error);
-        });
-
-        kapowWrapper.startGameWithFriends(function () {
-                console.log("Starting game with friends!");
-                self.sendChoices(self.chosenCharacter);
-            },
-            function (error) {
-                console.log(error);
-            });
-    }
-
     sendChoices(chosenCharacter) {
         var self = this;
         kapowWrapper.getUserInfo(function(user) {
@@ -47,12 +27,12 @@ class Lobby extends Phaser.State {
             kapowWrapper.getRoomInfo(function(room) {
                 var opponentId = null;
                 for (var i = 0; i < 2; i++) {
-                    if (room.players[i] != playerId) {
-                        opponentId = room.players[i];
+                    if (room.players[i].id !== chooserId) {
+                        opponentId = room.players[i].id;
                     }
                 }
 
-                kapowWrapper.callOnServer('sendTurn', new MoveData(characterChosen, chooserId, opponentId),
+                kapowWrapper.callOnServer('sendData', new MoveData(characterChosen, chooserId, opponentId),
                 function() {
                     console.log("Character choose turn sent!");
                     self.game.state.start("Arena");
@@ -61,18 +41,18 @@ class Lobby extends Phaser.State {
         });
     }
 
-    createSlider() {
-        this.chosenCharacter = 0;
-        kapowWrapper.getUserInfo(function (user) {
-            var chooserId = user.player.id;
-            let characterChosen = new CharacterChosen(chosenCharacter, chooserId);
-            kapowWrapper.callOnServer('sendTurn', new MoveData(characterChosen, chooserId,),
-                function () {
-                    console.log("Character choose turn sent!");
-                    self.game.state.start("Arena");
-                });
-        });
-    }
+    // createSlider() {
+    //     this.chosenCharacter = 0;
+    //     kapowWrapper.getUserInfo(function (user) {
+    //         var chooserId = user.player.id;
+    //         let characterChosen = new CharacterChosen(chosenCharacter, chooserId);
+    //         kapowWrapper.callOnServer('sendTurn', new MoveData(characterChosen, chooserId,),
+    //             function () {
+    //                 console.log("Character choose turn sent!");
+    //                 self.game.state.start("Arena");
+    //             });
+    //     });
+    // }
 
     create() {
 
@@ -96,14 +76,24 @@ class Lobby extends Phaser.State {
 
         var btn = this.game.add.image(670, 892, "play");
         btn.inputEnabled = true;
-        //btn.anchor.setTo(0.5);
 
         var self = this;
         btn.events.onInputDown.add(function (e, pointer) {
             var index = self.slider.getCurrentIndex();
             console.log("Selected char ", index);
-            self.onClick();
+            self.onClick(index);
         })
+    }
+    onClick(index) {
+        console.log("Play with friends clicked!");
+        var self = this;
+        kapowWrapper.startGameWithFriends(function () {
+                console.log("Starting game with friends!");
+                self.sendChoices(index);
+            },
+            function (error) {
+                console.log(error);
+            });
     }
 
     update() {

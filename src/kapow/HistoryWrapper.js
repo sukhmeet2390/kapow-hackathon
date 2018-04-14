@@ -3,6 +3,9 @@
 import kapowWrapper from "./KapowWrapper"
 
 let HistoryWrapper = {
+    getChoice(){
+        return 1;
+    },
     getAllMessages(successCB) {
         kapowWrapper.fetchAllHistory(successCB);
     },

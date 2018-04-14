@@ -26,7 +26,7 @@ class Arena extends Phaser.State {
             self.playerID = user.player.id;
             kapowWrapper.getRoomInfo(function(room) {
                 for (var i = 0; i < 2; i++) {
-                    if (room.players[i] != playerID) {
+                    if (room.players[i] !== self.playerID) {
                         self.opponentID = room.players[i];
                     }
                 }
@@ -68,7 +68,7 @@ class Arena extends Phaser.State {
         let move = new Move(this.myPlayer, this.opponentPlayer, power, angle, this.myPlayer.player.jid);
         let moveData = new MoveData(move, this.myPlayer.player.jid, this.opponentPlayer.player.jid);
         kapowWrapper.callOnServer('sendTurn', moveData);
-        playMove(move);
+        this.playMove(move);
     }
 
     playMove(move) {
