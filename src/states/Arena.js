@@ -35,20 +35,10 @@ class Arena extends Phaser.State {
     addPlayers() {
         this.secondPlayerSilhouette = this.game.add.sprite(1629, 690, 'tom');
         this.firstPlayerSilhouette = this.game.add.sprite(80, 690, 'harry');
-
-        this.firstPlayerWeapon = this.game.add.sprite(300, 600, 'projectile');
-        this.firstPlayerWeaponTransparent = this.game.add.sprite(300, 600, 'projectile');
-        this.game.physics.enable([this.firstPlayerWeapon, this.firstPlayerWeaponTransparent, 
-            this.firstPlayerSilhouette, this.secondPlayerSilhouette], Phaser.Physics.ARCADE);
+        this.game.physics.enable([this.firstPlayerSilhouette, this.secondPlayerSilhouette], Phaser.Physics.ARCADE);
 
         this.secondPlayerSilhouette.body.allowGravity = false;
-        this.firstPlayerSilhouette.body.allowGravity = false;   
-        this.firstPlayerWeaponTransparent.body.allowGravity = false;
-        this.firstPlayerWeapon.body.allowGravity = false;
-        this.firstPlayerWeaponTransparent.inputEnabled = true;
-        this.firstPlayerWeaponTransparent.alpha = 0.4;
-        this.firstPlayerWeaponTransparent.input.enableDrag(true);
-        this.firstPlayerWeaponTransparent.events.onDragStop.add(this.dragFinished, this, 0, this.firstPlayerWeapon);
+        this.firstPlayerSilhouette.body.allowGravity = false;
 
         this.firstPlayerSilhouette.body.immovable = true;
         this.secondPlayerSilhouette.body.immovable = true;
@@ -137,10 +127,17 @@ class Arena extends Phaser.State {
     }
 
     sendMove(power, angle) {
+        this.firstPlayerWeaponTransparent.kill();
         let move = new Move(this.owner, this.opponentPlayer, power, angle, this.playerID);
         let moveData = new MoveData(move, this.playerID, this.opponentID);
         kapowWrapper.callOnServer('sendTurn', moveData);
         this.playMove(this.firstPlayerWeapon, power, angle);
+        this.disableTurn();
+    }
+
+    opponentMove(moveMessage) {
+        this.playMove(this.secondPlayerWeapon, moveMessage.data.power, moveMessage.data.angle);
+        this.enableTurn();
     }
 
     playMove(weapon, power, angle) {
@@ -150,9 +147,19 @@ class Arena extends Phaser.State {
     }
 
     enableTurn() {
+        this.firstPlayerWeapon = this.game.add.sprite(300, 600, 'projectile');
+        this.firstPlayerWeaponTransparent = this.game.add.sprite(300, 600, 'projectile');
+        this.firstPlayerWeaponTransparent.body.allowGravity = false;
+        this.firstPlayerWeapon.body.allowGravity = false;
+        this.firstPlayerWeaponTransparent.inputEnabled = true;
+        this.firstPlayerWeaponTransparent.alpha = 0.4;
+        this.firstPlayerWeaponTransparent.input.enableDrag(true);
+        this.firstPlayerWeaponTransparent.events.onDragStop.add(this.dragFinished, this, 0, this.firstPlayerWeapon);
     }
 
     disableTurn() {
+        this.secondPlayerWeapon = this.game.add.sprite(1500, 600, 'projectile');
+        this.secondPlayerWeapon.body.allowGravity = false;
     }
 
     endGame(message) {

@@ -8,14 +8,14 @@ class ArenaController{
 
     handleMove(message){
         console.log("handling message" + JSON.stringify(message));
-        if(message.data.type === "move"){
-            this.game.state.states.Arena.updateHealth(message);
+        if(message.type === "move" && message.data.type === "Move"){
+            this.game.state.states.Arena.opponentMove(message);
         }
     }
 
     endGame(message) {
     	console.log("Received game end, handling! : " + JSON.stringify(message));
-    	if (message.data.type == "outcome") {
+    	if (message.type == "outcome") {
     		this.game.state.states.Arena.endGame(message);
     	}
     }
