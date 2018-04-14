@@ -6,28 +6,28 @@ let HistoryWrapper = {
     getAllMessages(successCB) {
         kapowWrapper.fetchAllHistory(successCB);
     },
-    getLastMove() {
+    getLastMove(successCB) {
         getAllMessages(function(messages) {
             let n = messages.length;
             for (var i = 0; i < n; i++) {
                 let message = messages[i];
                 if (message.type == "move") {
-                    return message;
+                    successCB(message);
                 }
             }
-            return null;
+            successCB(null);
         });
     },
-    getOutcome() {
+    getOutcome(successCB) {
         getAllMessages(function(messages) {
             let n = messages.length;
             for (var i = 0; i < n; i++) {
                 let message = message[i];
                 if (message.type == "outcome") {
-                    return message;
+                    successCB(message);
                 }
             }
-            return null;
+            successCB(null);
         });
     }
 };

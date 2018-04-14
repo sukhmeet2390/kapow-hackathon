@@ -13,5 +13,12 @@ class ArenaController{
         }
     }
 
+    endGame(message) {
+    	console.log("Received game end, handling! : " + JSON.stringify(message));
+    	if (message.data.type == "outcome") {
+    		this.game.state.states.Arena.endGame(message);
+    	}
+    }
+
 }
 export default ArenaController;

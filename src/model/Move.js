@@ -2,6 +2,7 @@
 
 class Move {
     constructor(tom, harry, power, angle, sentByJid) {
+    	this.type = 'Move';
         this.tom = tom;
         this.harry = harry;
         this.power = power;

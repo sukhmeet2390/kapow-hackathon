@@ -1,7 +1,7 @@
 class GameOver extends Phaser.State {
 
 	create() {
-
+		console.log("Game over screen!");
 	}
 
 	restartGame() {

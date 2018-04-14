@@ -15,6 +15,7 @@ let EventHandler = {
                 this.arenaController.handleMove(message);
                 break;
             case "outcome":
+                this.arenaController.endGame(message);
                 break;
             case "turn_change":
                 break;

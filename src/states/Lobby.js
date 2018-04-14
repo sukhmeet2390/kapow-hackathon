@@ -21,19 +21,41 @@ class Lobby extends Phaser.State {
     }
 
     onClick() {
-        console.log("Game started!");
+        console.log("Play with friends clicked!");
         var self = this;
         kapowWrapper.startGameWithFriends(function() {
             console.log("Starting game with friends!");
-            self.game.state.start("Arena");
+            self.sendChoices(self.chosenCharacter);
         },
         function(error) {
             console.log(error);
         });
     }
 
+    sendChoices(chosenCharacter) {
+        var self = this;
+        kapowWrapper.getUserInfo(function(user) {
+            var chooserId = user.player.id;
+            let characterChosen = new CharacterChosen(chosenCharacter, chooserId);
+            kapowWrapper.getRoomInfo(function(room) {
+                var opponentId = null;
+                for (var i = 0; i < 2; i++) {
+                    if (room.players[i] != playerId) {
+                        opponentId = room.players[i];
+                    }
+                }
+
+                kapowWrapper.callOnServer('sendTurn', new MoveData(characterChosen, chooserId, opponentId),
+                function() {
+                    console.log("Character choose turn sent!");
+                    self.game.state.start("Arena");
+                });
+            });
+        });
+    }
+
     createSlider() {
-        this.chosenPlayer = 0;
+        this.chosenCharacter = 0;
 
         this.sliderGroup = this.game.add.group();
         this.block1 = this.game.add.image(this.game.world.centerX, this.game.world.centerY, "block1");
@@ -58,13 +80,13 @@ class Lobby extends Phaser.State {
     _nextItem() {
         this.block1SwipeToRight.start();
         this.block2SwipeToRight.start();
-        this.chosenPlayer = 1;
+        this.chosenCharacter = 1;
     }
 
     _prevItem() {
         this.block1SwipeToLeft.start();
         this.block2SwipeToLeft.start();
-        this.chosenPlayer = 0;
+        this.chosenCharacter = 0;
     }
 
     update() {
