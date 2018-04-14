@@ -166,7 +166,7 @@ class Arena extends Phaser.State {
         if (moveMessage.data.angle >= 0) {
             moveMessage.data.angle = 180 - moveMessage.data.angle;
         } else {
-            moveMessage.data.angle = moveMessage.data.angle - 180;
+            moveMessage.data.angle = -180 - moveMessage.data.angle;
         }
         this.playMove(this.secondPlayerWeapon, moveMessage.data.power, moveMessage.data.angle);
     }
