@@ -21,7 +21,9 @@ let EventHandler = {
         console.log("Message received", message);
         switch (message.type) {
             case "move":
-                this.arenaController.handleMove(message);
+                if(message.data.type === "Move"){
+                    window.phasergame.state.states.Arena.opponentMove(message);
+                }
                 break;
             case "outcome":
                 this.arenaController.endGame(message);

@@ -7,7 +7,7 @@ let HistoryWrapper = {
         kapowWrapper.fetchAllHistory(successCB);
     },
     getChoice(playerID, successCB){
-        getAllMessages(function(messages) {
+        this.getAllMessages(function(messages) {
             let n = messages.length;
             for (var i = 0; i < n; i++) {
                 let message = messages[n - i - 1];
@@ -19,7 +19,7 @@ let HistoryWrapper = {
         });
     },
     getLastMove(successCB) {
-        getAllMessages(function(messages) {
+        this.getAllMessages(function(messages) {
             let n = messages.length;
             for (var i = 0; i < n; i++) {
                 let message = messages[n - i - 1];
@@ -31,7 +31,7 @@ let HistoryWrapper = {
         });
     },
     getOutcome(successCB) {
-        getAllMessages(function(messages) {
+        this.getAllMessages(function(messages) {
             let n = messages.length;
             for (var i = 0; i < n; i++) {
                 let message = message[n - i - 1];

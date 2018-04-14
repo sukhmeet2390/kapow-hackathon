@@ -51,23 +51,23 @@ class Arena extends Phaser.State {
         this.game.physics.arcade.collide(this.firstPlayerWeapon, this.secondPlayerSilhouette, function (weapon, player) {
             weapon.kill();
             console.log("You hit opponent!");
-            this._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, self.secondPlayerSilhouette, null);
+            self._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, self.secondPlayerSilhouette, null);
         });
 
         this.game.physics.arcade.collide(this.secondPlayerWeapon, this.firstPlayerSilhouette, function (weapon, player) {
             weapon.kill();
             console.log("Opponent hit me!");
-            this._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, self.firstPlayerSilhouette, null);
+            self._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, self.firstPlayerSilhouette, null);
         });
         this.game.physics.arcade.collide(this.firstPlayerWeapon, this.wall, function (weapon, player) {
             console.log("Hit wall");
             weapon.kill();
-            this._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, null, true);
+            self._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, null, true);
         })
         this.game.physics.arcade.collide(this.secondPlayerWeapon, this.wall, function (weapon, player) {
             console.log("Hit wall");
             weapon.kill();
-            this._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, null, true);
+            self._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, null, true);
         })
     }
 
@@ -80,7 +80,6 @@ class Arena extends Phaser.State {
     }
 
     initialise() {
-        this.disableTurn();
         var self = this;
         kapowWrapper.getUserInfo(function (user) {
             console.log("Found userInfo ", user, self);
@@ -103,17 +102,17 @@ class Arena extends Phaser.State {
     }
 
     getPlayers() {
-        var opponentChoice = HistoryWrapper.getChoice(this.opponentID);
-        var myChoice = HistoryWrapper.getChoice(this.playerID);
-
-        if (myChoice == null) {
-            myChoice = 1 - opponentChoice;
-            sendChoice(myChoice);
-        }
-
-        if (opponentChoice == null) {
-            opponentChoice = 1 - myChoice;
-        }
+        // var opponentChoice = HistoryWrapper.getChoice(this.opponentID);
+        // var myChoice = HistoryWrapper.getChoice(this.playerID);
+        //
+        // if (myChoice == null) {
+        //     myChoice = 1 - opponentChoice;
+        //     this.sendChoice(myChoice);
+        // }
+        //
+        // if (opponentChoice == null) {
+        //     this.opponentChoice = 1 - myChoice;
+        // }
 
         // get characters stored
     }
@@ -129,10 +128,13 @@ class Arena extends Phaser.State {
     }
 
     sendMove(power, angle) {
+        console.log("calling sendMove");
         this.firstPlayerWeaponTransparent.kill();
         let move = new Move(this.owner, this.opponentPlayer, power, angle, this.playerID);
         let moveData = new MoveData(move, this.playerID, this.opponentID);
-        kapowWrapper.callOnServer('sendTurn', moveData);
+        kapowWrapper.callOnServer('sendTurn', moveData, function(){
+            console.log("Send turn success");
+        });
         this.playMove(this.firstPlayerWeapon, power, angle);
         this.disableTurn();
     }
@@ -167,11 +169,12 @@ class Arena extends Phaser.State {
     }
 
     setTurn() {
+        var self = this;
         kapowWrapper.getRoomInfo(function (room) {
-            if (room.nextPlayerId === this.playerID) {
-                this.enableTurn();
+            if (room.nextPlayerId === self.playerID) {
+                self.enableTurn();
             } else {
-                this.disableTurn();
+                self.disableTurn();
             }
         });
     }
