@@ -42,7 +42,8 @@ class Arena extends Phaser.State {
 
         this.firstPlayerSilhouette.body.immovable = true;
         this.secondPlayerSilhouette.body.immovable = true;
-        //this.initialise();
+        this.initialise();
+        this.setTurn();
     }
 
     update() {
@@ -94,10 +95,9 @@ class Arena extends Phaser.State {
                 console.log(self);
                 console.log("UserJID : " + self.playerID);
                 console.log("opponentJID : " + self.opponentID);
-                self.getPlayers();
+                // self.getPlayers();
             });
         });
-
     }
 
     getPlayers() {
@@ -160,6 +160,16 @@ class Arena extends Phaser.State {
     disableTurn() {
         this.secondPlayerWeapon = this.game.add.sprite(1500, 600, 'projectile');
         this.secondPlayerWeapon.body.allowGravity = false;
+    }
+
+    setTurn() {
+        kapowWrapper.getRoomInfo(function(room) {
+            if (room.nextPlayerId === this.playerID) {
+                this.enableTurn();
+            } else {
+                this.disableTurn();
+            }
+        });
     }
 
     turnChange(player) {
