@@ -14,7 +14,7 @@ class Lobby extends Phaser.State {
     preload() {
         console.log("Lobby Preload");
         this.load.image("block1", "assets/final/lobby_prem.png");
-        this.load.image("block2", "assets/final/lobby_babuji.png");
+        this.load.image("block2", "assets/final/lobby_babu.png");
         this.load.image("play", "assets/bt-battle.png");
         this.slider = new phaseSlider(this.game);
     }
