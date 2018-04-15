@@ -210,12 +210,14 @@ class Arena extends Phaser.State {
             if (message) {
                 let p1 = message.data.tom;
                 let p2 = message.data.harry;
-                if (p1.player.jid === self.firstPlayerSilhouette.player.jid) {
-                    self.firstPlayerSilhouette.player.health = p1.player.health;
-                    self.secondPlayerSilhouette.player.health = p2.player.health;
+                console.log("p1 = " + JSON.stringify(p1));
+                console.log("p1 = " + JSON.stringify(p2));
+                if (p1.jid === self.firstPlayerSilhouette.player.jid) {
+                    self.firstPlayerSilhouette.player.health = p1.health;
+                    self.secondPlayerSilhouette.player.health = p2.health;
                 } else {
-                    self.firstPlayerSilhouette.player.health = p2.player.health;
-                    self.secondPlayerSilhouette.player.health = p1.player.health;
+                    self.firstPlayerSilhouette.player.health = p2.health;
+                    self.secondPlayerSilhouette.player.health = p1.health;
                 }
             }
 
@@ -263,8 +265,8 @@ class Arena extends Phaser.State {
     sendMove(power, angle, wind) {
         console.log("calling sendMove");
         this.firstPlayerWeaponTransparent.kill();
-        let move = new Move(this.owner, this.opponentPlayer, power, angle, wind, this.playerID);
-        let moveData = new MoveData(move, this.playerID, this.opponentID);
+        let move = new Move(this.firstPlayerSilhouette.player, this.secondPlayerSilhouette.player, power, angle, wind, this.playerID);
+        let moveData = new MoveData(move, this.playerID, this.playerID);
         let self = this;
         kapowWrapper.callOnServer('sendTurn', moveData, function () {
             console.log("Send turn success");
@@ -314,7 +316,6 @@ class Arena extends Phaser.State {
 
     displayWind() {
         let wind = this.game.physics.arcade.gravity.x;
-        console.log("wind : " + wind);
         if (wind && wind > 0) {
             let times = (wind + 59) / 60;
             let windString = "";
@@ -323,13 +324,11 @@ class Arena extends Phaser.State {
                 times -= 1;
             }
             windString += ">";
-            console.log(windString);
             this.windText.text = windString;
             this.windText.visible = true;
         } else {
             this.windText.visible = false;
         }
-        console.log(this.windText);
     }
 
     getRandomWind() {
@@ -339,10 +338,11 @@ class Arena extends Phaser.State {
     finishAnimation(weapon) {
         console.log("Animation finished!");
         this.killWeapon(weapon);
+        this.setTurn();
     }
 
     sendSyncState() {
-        let syncState = new SyncState(this.firstPlayerSilhouette, this.secondPlayerSilhouette);
+        let syncState = new SyncState(this.firstPlayerSilhouette.player, this.secondPlayerSilhouette.player);
         kapowWrapper.callOnServer('sendTurn', new MoveData(syncState, this.playerID, this.opponentID), function() {
             console.log("Sync state sent successfully!");
         });
