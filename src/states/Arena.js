@@ -294,8 +294,9 @@ class Arena extends Phaser.State {
     }
 
     enableTurn() {
-        this.game.physics.arcade.gravity.x = this.getRandomWind();
         this.killAllWeapons();
+        if (this.winner) return;
+        this.game.physics.arcade.gravity.x = this.getRandomWind();
         this.firstPlayerWeapon = this.game.add.sprite(300, 600, 'projectile');
         this.firstPlayerWeaponTransparent = this.game.add.sprite(300, 600, 'projectile');
         this.game.physics.enable([this.firstPlayerWeapon], Phaser.Physics.ARCADE);
@@ -361,6 +362,7 @@ class Arena extends Phaser.State {
     disableTurn() {
         this.game.physics.arcade.gravity.x = 0;
         this.killAllWeapons();
+        if (this.winner) return;
         this.secondPlayerWeapon = this.game.add.sprite(1500, 600, 'projectile');
         this.secondPlayerWeapon.checkWorldBounds = true;
         this.secondPlayerWeapon.events.onOutOfBounds.add(this.finishAnimation, this, 0, this.secondPlayerWeapon);
@@ -396,6 +398,10 @@ class Arena extends Phaser.State {
     }
 
     setTurn() {
+        if (this.winner) {
+            this.killAllWeapons();
+            return;
+        }
         let self = this;
         kapowWrapper.getRoomInfo(function (room) {
             self.room = room;
