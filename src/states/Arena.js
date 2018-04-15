@@ -9,7 +9,6 @@ import Harry from "../model/Harry";
 class Arena extends Phaser.State {
 
     preload() {
-        this._isLoaded = false;
         this.game.load.image('tom', 'assets/final/char-babuji-standing.png');
         this.game.load.image('harry', 'assets/final/char-prem-standing.png');
         this.game.load.image('wall', 'assets/wall.png');
@@ -49,6 +48,7 @@ class Arena extends Phaser.State {
 
         this.wall = this.game.add.sprite(910, 600, 'wall');
         this.game.physics.enable([this.wall], Phaser.Physics.ARCADE);
+        this.wall.body.allowGravity = false;
 
         this.addPlayers();
     }
@@ -72,32 +72,39 @@ class Arena extends Phaser.State {
     }
 
     update() {
-        if (this._isLoaded === false) return true;
         var self = this;
 
-        this.game.physics.arcade.collide(this.firstPlayerWeapon, this.secondPlayerSilhouette, function (weapon, player) {
-            console.log("You hit opponent!");
-            weapon.destroy();
-            self._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, self.secondPlayerSilhouette, null, true);
-        });
+        if (this.firstPlayerWeapon && this.secondPlayerSilhouette) {
+            this.game.physics.arcade.collide(this.firstPlayerWeapon, this.secondPlayerSilhouette, function (weapon, player) {
+                console.log("You hit opponent!");
+                weapon.destroy();
+                self._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, self.secondPlayerSilhouette, null, true);
+            });
+        }
 
-        this.game.physics.arcade.collide(this.secondPlayerWeapon, this.firstPlayerSilhouette, function (weapon, player) {
-            console.log("Opponent hit me!");
-            weapon.destroy();
-            self._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, self.firstPlayerSilhouette, null, false);
-        });
+        if (this.secondPlayerWeapon && this.firstPlayerSilhouette) {
+            this.game.physics.arcade.collide(this.secondPlayerWeapon, this.firstPlayerSilhouette, function (weapon, player) {
+                console.log("Opponent hit me!");
+                weapon.destroy();
+                self._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, self.firstPlayerSilhouette, null, false);
+            });
+        }
 
-        this.game.physics.arcade.collide(this.firstPlayerWeapon, this.wall, function (weapon, wall) {
-            console.log("Hit wall");
-            weapon.destroy();
-            self._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, null, true, true);
-        });
+        if (this.firstPlayerWeapon && this.wall) {
+            this.game.physics.arcade.collide(this.firstPlayerWeapon, this.wall, function (weapon, wall) {
+                console.log("Hit wall");
+                weapon.destroy();
+                self._handleHit(self.firstPlayerSilhouette, self.firstPlayerWeapon, null, true, true);
+            });
+        }
 
-        this.game.physics.arcade.collide(this.secondPlayerWeapon, this.wall, function (weapon, wall) {
-            console.log("Hit wall");
-            weapon.destroy();
-            self._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, null, true, false);
-        });
+        if (this.secondPlayerWeapon && this.wall) {
+            this.game.physics.arcade.collide(this.secondPlayerWeapon, this.wall, function (weapon, wall) {
+                console.log("Hit wall");
+                weapon.destroy();
+                self._handleHit(self.secondPlayerSilhouette, self.secondPlayerWeapon, null, true, false);
+            });
+        }
     }
 
     _handleHit(hitBy, hitWeapon, hitTo, isWall, isFirstPlayer) {
