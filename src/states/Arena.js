@@ -152,19 +152,28 @@ class Arena extends Phaser.State {
     }
 
     getPlayers() {
-        // var opponentChoice = HistoryWrapper.getChoice(this.opponentID);
-        // var myChoice = HistoryWrapper.getChoice(this.playerID);
-        //
-        // if (myChoice == null) {
-        //     myChoice = 1 - opponentChoice;
-        //     this.sendChoice(myChoice);
-        // }
-        //
-        // if (opponentChoice == null) {
-        //     this.opponentChoice = 1 - myChoice;
-        // }
+        var self = this;
+        HistoryWrapper.getChoice(self.playerID, function(message) {
+            if (!message) {
+                HistoryWrapper.getChoice(self.opponentID, function(message) {
+                    var opponentChoice = message.data.characterId;
+                    self.respectChoices(1 - opponentChoice, opponentChoice);
+                });
+            } else {
+                var myChoice = message.data.characterId;
+                self.respectChoices(myChoice, 1 - myChoice);
+            }
+        });
+    }
 
-        // get characters stored
+    respectChoices(myChoice, opponentChoice) {
+        console.log("My choice : " + myChoice);
+        console.log("Opponent choice : " + opponentChoice);
+        if (myChoice !== 0) {
+            var temp = this.firstPlayerSilhouette;
+            this.firstPlayerSilhouette = this.secondPlayerSilhouette;
+            this.secondPlayerSilhouette = temp;
+        }
     }
 
     sendChoice(choice) {
@@ -214,6 +223,7 @@ class Arena extends Phaser.State {
         this.firstPlayerWeaponTransparent.inputEnabled = true;
         this.firstPlayerWeaponTransparent.alpha = 0.4;
         this.firstPlayerWeaponTransparent.input.enableDrag(true);
+        this.firstPlayerWeapon.checkWorldBounds = true;
         this.firstPlayerWeaponTransparent.events.onDragStop.add(this.dragFinished, this, 0, this.firstPlayerWeapon);
         this.firstPlayerWeapon.events.onOutOfBounds.add(this.finishAnimation, this, 0, this.firstPlayerWeapon);
     }
@@ -227,6 +237,7 @@ class Arena extends Phaser.State {
     disableTurn() {
         this.killAllWeapons();
         this.secondPlayerWeapon = this.game.add.sprite(1500, 600, 'projectile');
+        this.secondPlayerWeapon.checkWorldBounds = true;
         this.secondPlayerWeapon.events.onOutOfBounds.add(this.finishAnimation, this, 0, this.secondPlayerWeapon);
         this.game.physics.enable([this.secondPlayerWeapon], Phaser.Physics.ARCADE);
         this.secondPlayerWeapon.body.allowGravity = false;

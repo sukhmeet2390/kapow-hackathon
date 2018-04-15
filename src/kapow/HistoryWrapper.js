@@ -8,6 +8,7 @@ let HistoryWrapper = {
     },
     getChoice(playerID, successCB){
         this.getAllMessages(function(messages) {
+            console.log("History fetch : " + JSON.stringify(messages));
             let n = messages.length;
             for (var i = 0; i < n; i++) {
                 let message = messages[n - i - 1];
