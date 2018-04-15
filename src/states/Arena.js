@@ -11,6 +11,10 @@ class Arena extends Phaser.State {
     preload() {
         this.game.load.image('tom', 'assets/final/char-babuji-standing.png');
         this.game.load.image('harry', 'assets/final/char-prem-standing.png');
+
+        this.game.load.image('babuji-loaded', 'assets/final/char-babuji-kalash.png');
+        this.game.load.image('prem-loaded', 'assets/final/char-prem-gun.png');
+
         this.game.load.image('wall', 'assets/final/wall.png');
         this.game.load.image('bg', 'assets/final/bg-fight.png');
         this.game.load.image('projectile', 'assets/final/projectile-bullet.png');
@@ -25,7 +29,7 @@ class Arena extends Phaser.State {
     create() {
         console.log("Create of arena called!");
         var self = this;
-        kapowWrapper.getRoomInfo(function(room) {
+        kapowWrapper.getRoomInfo(function (room) {
             console.log("Room fetched : " + room);
             if (!room) {
                 self.game.state.start("Menu");
@@ -261,6 +265,13 @@ class Arena extends Phaser.State {
         this.firstPlayerWeapon.checkWorldBounds = true;
         this.firstPlayerWeaponTransparent.events.onDragStop.add(this.dragFinished, this, 0, this.firstPlayerWeapon);
         this.firstPlayerWeapon.events.onOutOfBounds.add(this.finishAnimation, this, 0, this.firstPlayerWeapon);
+        if (this.firstPlayerSilhouette.player.name === "Tom") {
+            this.firstPlayerSilhouette.loadTexture('babuji-loaded');
+        } else if (this.firstPlayerSilhouette.player.name === "Harry") {
+            this.firstPlayerSilhouette.loadTexture('prem-loaded');
+        } else {
+            console.log("Neither tom or harry " + this.firstPlayerSilhouette.player.name);
+        }
     }
 
     finishAnimation(weapon) {
@@ -276,6 +287,13 @@ class Arena extends Phaser.State {
         this.secondPlayerWeapon.events.onOutOfBounds.add(this.finishAnimation, this, 0, this.secondPlayerWeapon);
         this.game.physics.enable([this.secondPlayerWeapon], Phaser.Physics.ARCADE);
         this.secondPlayerWeapon.body.allowGravity = false;
+        if (this.firstPlayerSilhouette.player.name === "Tom") {
+            this.firstPlayerSilhouette.loadTexture('tom');
+        } else if (this.firstPlayerSilhouette.player.name === "Harry") {
+            this.firstPlayerSilhouette.loadTexture('harry');
+        } else {
+            console.log("Neither tom or harry " + this.firstPlayerSilhouette.player.name);
+        }
     }
 
     killAllWeapons() {
@@ -292,7 +310,7 @@ class Arena extends Phaser.State {
         let self = this;
         kapowWrapper.getRoomInfo(function (room) {
             self.room = room;
-            if (room.players[0].affiliation == "accepted" && room.players[1].affiliation == "accepted") {
+            if (room.players[0].affiliation === "accepted" && room.players[1].affiliation === "accepted") {
                 if (!room.nextPlayerId) {
                     console.log("No next player set");
                 }
@@ -373,7 +391,7 @@ class Arena extends Phaser.State {
 
     _handleBackButton() {
         console.log("Back button inside arena!");
-        kapow.unloadRoom(function() {
+        kapow.unloadRoom(function () {
             console.log("Unloaded room");
             kapow.close();
         });
