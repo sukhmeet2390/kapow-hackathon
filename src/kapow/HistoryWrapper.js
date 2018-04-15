@@ -11,9 +11,10 @@ let HistoryWrapper = {
             console.log("History fetch : " + JSON.stringify(messages));
             let n = messages.length;
             for (var i = 0; i < n; i++) {
-                let message = messages[n - i - 1];
+                let message = messages[i];
                 if (message.type == "move" && message.data.type == "CharacterChosen" && message.data.chooserId == playerID) {
                     successCB(message);
+                    return;
                 }
             }
             successCB(null);
@@ -26,6 +27,7 @@ let HistoryWrapper = {
                 let message = messages[n - i - 1];
                 if (message.type == "move" && message.data.type == "Move") {
                     successCB(message);
+                    return;
                 }
             }
             successCB(null);
@@ -38,6 +40,7 @@ let HistoryWrapper = {
                 let message = messages[n - i - 1];
                 if (message.type == "outcome") {
                     successCB(message);
+                    return;
                 }
             }
             successCB(null);

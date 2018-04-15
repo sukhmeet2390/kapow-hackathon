@@ -55,24 +55,7 @@ class Arena extends Phaser.State {
     }
 
     addPlayers() {
-        var callback = function () {
-            this.secondPlayerSilhouette = new Tom(this.game, 1629, 690, 'tom', this.opponentID);
-            this.firstPlayerSilhouette = new Harry(this.game, 80, 690, 'harry', this.playerID);
-
-            console.log(this.firstPlayerSilhouette);
-            console.log(this.secondPlayerSilhouette);
-
-            this.game.physics.enable([this.firstPlayerSilhouette, this.secondPlayerSilhouette], Phaser.Physics.ARCADE);
-
-            this.secondPlayerSilhouette.body.allowGravity = false;
-            this.firstPlayerSilhouette.body.allowGravity = false;
-
-            this.firstPlayerSilhouette.body.immovable = true;
-            this.secondPlayerSilhouette.body.immovable = true;
-        }.bind(this);
-
-        this.initialise(callback);
-
+        this.initialise();
     }
 
     update() {
@@ -127,7 +110,7 @@ class Arena extends Phaser.State {
         this.setTurn();
     }
 
-    initialise(callback) {
+    initialise() {
         var self = this;
         kapowWrapper.getUserInfo(function (user) {
             console.log("Found userInfo ", user, self);
@@ -143,7 +126,6 @@ class Arena extends Phaser.State {
                 console.log(self);
                 console.log("UserJID : " + self.playerID);
                 console.log("opponentJID : " + self.opponentID);
-                callback();
                 self.getPlayers();
                 self.setTurn();
 
@@ -154,8 +136,10 @@ class Arena extends Phaser.State {
     getPlayers() {
         var self = this;
         HistoryWrapper.getChoice(self.playerID, function(message) {
+            console.log(JSON.stringify(message) + " " + self.playerID);
             if (!message) {
                 HistoryWrapper.getChoice(self.opponentID, function(message) {
+                    console.log(JSON.stringify(message) + " " + self.opponentID);
                     var opponentChoice = message.data.characterId;
                     self.respectChoices(1 - opponentChoice, opponentChoice);
                 });
@@ -169,18 +153,27 @@ class Arena extends Phaser.State {
     respectChoices(myChoice, opponentChoice) {
         console.log("My choice : " + myChoice);
         console.log("Opponent choice : " + opponentChoice);
-        if (myChoice !== 0) {
-            var temp = this.firstPlayerSilhouette;
-            this.firstPlayerSilhouette = this.secondPlayerSilhouette;
-            this.secondPlayerSilhouette = temp;
-        }
-    }
+        this.myChoice = myChoice;
+        this.opponentChoice = opponentChoice;
 
-    sendChoice(choice) {
-        kapowWrapper.callOnServer('sendData', new MoveData(choice, this.playerID, this.opponentID),
-            function () {
-                console.log("Character choose turn sent!");
-            });
+        if (myChoice === 0) {
+            this.secondPlayerSilhouette = new Tom(this.game, 1629, 690, 'tom', this.opponentID);
+            this.firstPlayerSilhouette = new Harry(this.game, 80, 690, 'harry', this.playerID);
+        } else {
+            this.secondPlayerSilhouette = new Harry(this.game, 1629, 690, 'harry', this.opponentID);
+            this.firstPlayerSilhouette = new Tom(this.game, 80, 690, 'tom', this.playerID);
+        }
+
+            console.log(this.firstPlayerSilhouette);
+            console.log(this.secondPlayerSilhouette);
+
+            this.game.physics.enable([this.firstPlayerSilhouette, this.secondPlayerSilhouette], Phaser.Physics.ARCADE);
+
+            this.secondPlayerSilhouette.body.allowGravity = false;
+            this.firstPlayerSilhouette.body.allowGravity = false;
+
+            this.firstPlayerSilhouette.body.immovable = true;
+            this.secondPlayerSilhouette.body.immovable = true;
     }
 
     updateArena() {
