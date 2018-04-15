@@ -15,7 +15,7 @@ let EventHandler = {
     },
     _handleTurnChange(player) {
         console.log("Handle turn change ", player);
-        window.phasergame.state.states.Arena.turnChange(player);
+        // window.phasergame.state.states.Arena.turnChange(player);
     },
     _handleMessage(message) {
         console.log("Message received", message);

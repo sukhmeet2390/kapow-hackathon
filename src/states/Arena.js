@@ -19,6 +19,23 @@ class Arena extends Phaser.State {
     }
 
     create() {
+        console.log("Create of arena called!");
+        this.checkGameState();
+    }
+
+    checkGameState() {
+        let self = this;
+        HistoryWrapper.getOutcome(function(message) {
+            if (message) {
+                console.log("Game already ended in room!");
+                self.game.state.start("GameOver");
+            } else {
+                self.createState();
+            }
+        });
+    }
+
+    createState() {
         this.health1 = new PhaserUi.ProgressBar(this.game, 730, 70, PhaserUi.Graphics.roundedRectBmd, 4, '');
         this.health2 = new PhaserUi.ProgressBar(this.game, 730, 70, PhaserUi.Graphics.roundedRectBmd, 4, '');
         this.health1.x = 400;
@@ -84,11 +101,6 @@ class Arena extends Phaser.State {
     }
 
     _handleHit(hitBy, hitWeapon, hitTo, isWall, isFirstPlayer) {
-        if (isFirstPlayer === false) {
-            this.setNextTurn(this.playerID);
-        } else {
-            this.setNextTurn(this.opponentID);
-        }
 
         if (isWall) {
             console.log("You hit the wall");
@@ -100,6 +112,8 @@ class Arena extends Phaser.State {
                 this.updateHealth1(1);
             }
         }
+
+        this.setTurn();
     }
 
     initialise(callback) {
@@ -157,10 +171,11 @@ class Arena extends Phaser.State {
         this.firstPlayerWeaponTransparent.kill();
         let move = new Move(this.owner, this.opponentPlayer, power, angle, this.playerID);
         let moveData = new MoveData(move, this.playerID, this.opponentID);
+        let self = this;
         kapowWrapper.callOnServer('sendTurn', moveData, function () {
             console.log("Send turn success");
+            self.playMove(this.firstPlayerWeapon, power, angle);
         });
-        this.playMove(this.firstPlayerWeapon, power, angle);
     }
 
     opponentMove(moveMessage) {
@@ -193,19 +208,8 @@ class Arena extends Phaser.State {
     }
 
     finishAnimation(weapon) {
-        if (weapon === this.firstPlayerWeapon) {
-            this.setNextTurn(this.opponentID);
-        } else {
-            this.setNextTurn(this.playerID);
-        }
-    }
-
-    setNextTurn(id) {
-        if (id === this.playerID) {
-            this.enableTurn();
-        } else {
-            this.disableTurn();
-        }
+        this.killWeapon(weapon);
+        this.setTurn();
     }
 
     disableTurn() {
@@ -227,7 +231,7 @@ class Arena extends Phaser.State {
     }
 
     setTurn() {
-        var self = this;
+        let self = this;
         kapowWrapper.getRoomInfo(function (room) {
             self.room = room;
             if (!room.nextPlayerId) {
@@ -241,21 +245,12 @@ class Arena extends Phaser.State {
         });
     }
 
-    turnChange(player) {
-        console.log("Turn change received in arena : " + JSON.stringify(player));
-        // if (player === this.playerID) {
-        //     this.enableTurn();
-        // } else {
-        //     this.disableTurn();
-        // }
-    }
-
     endGame(message) {
         console.log("End game called : " + JSON.stringify(message));
-        var self = this;
+        let self = this;
         if (this.winner === this.firstPlayerSilhouette) {
-            var winnerId = this.firstPlayerSilhouette.player.jid;
-            var loserId = this.secondPlayerSilhouette.player.jid;
+            let winnerId = this.firstPlayerSilhouette.player.jid;
+            let loserId = this.secondPlayerSilhouette.player.jid;
             console.log("Winner", winnerId);
             console.log("loser", loserId);
             kapowWrapper.callOnServer('endGameOnServer', loserId, function () {

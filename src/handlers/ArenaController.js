@@ -22,7 +22,7 @@ class ArenaController{
 
     handleTurnChange(message) {
         console.log("Received turn change message, handling : " + JSON.stringify(message));
-            this.game.state.states.Arena.turnChange(message);
+        // this.game.state.states.Arena.turnChange(message);
 
     }
 
