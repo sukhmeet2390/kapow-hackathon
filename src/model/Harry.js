@@ -14,6 +14,7 @@ export default class Harry extends Phaser.Sprite {
         this.image = this.game.add.sprite(x, y, label);
         this.image.scale.setTo(1.23, 1.23);
         this.player = new Player("Harry", jid, [new Power("gun", 10), new Power("heart", 10)]);
+        this.music = this.game.add.audio('harry-sound');
     }
 
     playerHit() {
@@ -30,5 +31,10 @@ export default class Harry extends Phaser.Sprite {
         setInterval(function () {
             self.hitImage.destroy();
         }, 400);
+    }
+
+    playSuccess() {
+        this.game.sound.stopAll();
+        this.music.play();
     }
 }

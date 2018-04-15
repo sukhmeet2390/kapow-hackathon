@@ -12,6 +12,7 @@ export default class Tom extends Phaser.Sprite {
         this.anchor.setTo(0.5);
         this.image = this.game.add.sprite(x, y, label);
         this.player = new Player("Tom", jid, [new Power("sanskar", 10), new Power("heart", 10)]);
+        this.music = this.game.add.audio('tom-sound');
     }
 
     playerHit() {
@@ -28,5 +29,10 @@ export default class Tom extends Phaser.Sprite {
         setInterval(function () {
             self.hitImage.destroy();
         }, 200);
+    }
+
+    playSuccess() {
+        this.game.sound.stopAll();
+        this.music.play();
     }
 }

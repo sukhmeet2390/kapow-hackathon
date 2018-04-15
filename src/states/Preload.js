@@ -17,6 +17,8 @@ class Preload extends Phaser.State {
 
 
         this.game.load.audio('gameSound', 'assets/audio/Theme.mp3', true);
+        this.game.load.audio('tom-sound', 'assets/audio/tom.mp3', true);
+        this.game.load.audio('harry-sound', 'assets/audio/harry.mp3', true);
         // Menu
         this.game.load.image('welcome', 'assets/final/welcome.png');
         this.game.load.image('bt', 'assets/final/bt-play.png');
@@ -62,7 +64,7 @@ class Preload extends Phaser.State {
         this.scale.forceOrientation(true, false);
 
         var self = this;
-        this.game.sound.setDecodedCallback(['gameSound'], function(){
+        this.game.sound.setDecodedCallback(['gameSound', 'tom-sound', 'harry-sound'], function(){
             console.log('sounds are ready');
             this.theme.play();
             var id = setInterval(function () {
