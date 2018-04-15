@@ -4,7 +4,10 @@ import Power from "./Power";
 
 export default class Tom extends Phaser.Sprite {
     constructor(game, x, y, jid) {
-        let label = 'tom';
+        let label = 'tom-left';
+        if (x > 600) {
+            label = 'tom-right';
+        }
         super(game, x, y, label);
         this.anchor.setTo(0.5);
         this.image = this.game.add.sprite(x, y, label);
