@@ -101,9 +101,9 @@ class Arena extends Phaser.State {
         } else {
             console.log("Player hit the other one ");
             if (isFirstPlayer) {
-                this.updateHealth2(1)
+                this.updateHealth2(0.2)
             } else {
-                this.updateHealth1(1);
+                this.updateHealth1(0.2);
             }
         }
 
