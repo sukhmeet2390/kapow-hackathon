@@ -1,4 +1,3 @@
-import SocialShare from "../model/SocialShare";
 import KapowWrapper from "../kapow/KapowWrapper";
 
 class GameOver extends Phaser.State {

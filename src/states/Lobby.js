@@ -35,15 +35,14 @@ class Lobby extends Phaser.State {
                 console.log("Chooser : " + chooserId);
                 console.log("Character chosen : " + characterChosen);
 
-                kapowWrapper.callOnServer('initialiseRoom', chooserId, function() {
-                    console.log("Room init called!");
-                    kapowWrapper.callOnServer('sendData', new MoveData(characterChosen, chooserId, opponentId),
-                        function() {
-                            console.log("Character choose turn sent!");
-                            self.game.state.start("Arena");
-                        });
-                }, function(error) {
-                    console.log("Error in room init : " + error);
+
+                kapowWrapper.callOnServer('sendTurn', new MoveData(characterChosen, chooserId, chooserId),
+                    function() {
+                        console.log("Character choose turn sent!");
+                        self.game.state.start("Arena");
+                    },
+                    function(error) {
+                        console.log("Error in sendTurn: " + error);
                 });
             });
         });
