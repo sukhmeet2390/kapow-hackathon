@@ -51,11 +51,11 @@ class Arena extends Phaser.State {
                 kapowWrapper.getUserInfo(function (owner) {
                     var myId = owner.player.id;
                     if (message.data.ranks[myId] === 1) {
-                        self.game.state.start("GameOver", true, null, "Win");
+                        self.game.state.start("GameOver", true, false, "Win");
                     } else if (message.data.ranks[myId] === 2) {
-                        self.game.state.start("GameOver", true, null, "Lose");
+                        self.game.state.start("GameOver", true, false, "Lose");
                     } else {
-                        self.game.state.start("GameOver", true, null, null);
+                        self.game.state.start("GameOver", true, false, null);
                     }
                 });
 
@@ -131,7 +131,6 @@ class Arena extends Phaser.State {
         } else {
             console.log("Player hit the other one ");
             if (isFirstPlayer) {
-// <<<<<<< HEAD
                 if (this.secondPlayerSilhouette.player.name === "tom") {
                     this.firstPlayerSilhouette.loadTexture('babuji-hit');
                     var id = setTimeout(function(){
