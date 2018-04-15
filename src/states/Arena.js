@@ -49,6 +49,7 @@ class Arena extends Phaser.State {
         this.wall = this.game.add.sprite(910, 600, 'wall');
         this.game.physics.enable([this.wall], Phaser.Physics.ARCADE);
         this.wall.body.allowGravity = false;
+        this.wall.body.immovable = true;
 
         this.addPlayers();
     }
