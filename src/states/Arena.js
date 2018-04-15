@@ -17,15 +17,6 @@ class Arena extends Phaser.State {
 
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.physics.arcade.gravity.y = 500;
-
-        var self = this;
-
-        kapowWrapper.getRoomInfo(function(room) {
-            var players = room.players;
-            for (var i = 0; i < 2; i++) {
-                self.game.load.image("avatar_" + players[i].id, players[i].profileImage + "?height=100&width=100");
-            }
-        });
     }
 
     create() {
@@ -55,6 +46,7 @@ class Arena extends Phaser.State {
         this.health2.x = 1500;
         this.health2.y = 100;
         this.health2.progress = 1;
+        this.health2.reversed = true;
 
         this.wall = this.game.add.sprite(910, 600, 'wall');
         this.game.physics.enable([this.wall], Phaser.Physics.ARCADE);
@@ -180,15 +172,26 @@ class Arena extends Phaser.State {
         this.firstPlayerSilhouette.body.immovable = true;
         this.secondPlayerSilhouette.body.immovable = true;
 
-        this.addFacebookAvatars();
+        // this.addFacebookAvatars();
     }
 
     addFacebookAvatars() {
         console.log("Adding facebook images");
-        var myImage = this.game.add.sprite(750, 50, "avatar_" + this.playerID);
-        var oppImage = this.game.add.sprite(1050, 50, "avatar_" + this.opponentID);
-        console.log(myImage);
-        console.log(oppImage);
+        var self = this;
+
+        kapowWrapper.getRoomInfo(function(room) {
+            var players = room.players;
+            for (var i = 0; i < 2; i++) {
+                self.game.load.image("avatar_" + players[i].id, players[i].profileImage + "?height=100&width=100");
+            }
+            self.game.load.start();
+            self.game.load.onLoadComplete.add(function() {
+                let myImage = self.game.add.sprite(750, 50, "avatar_" + self.playerID);
+                let oppImage = self.game.add.sprite(1050, 50, "avatar_" + self.opponentID);
+                console.log(myImage);
+                console.log(oppImage);
+            }, self);
+        });
     }
 
     updateArena() {
