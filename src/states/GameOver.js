@@ -3,12 +3,7 @@ import KapowWrapper from "../kapow/KapowWrapper";
 class GameOver extends Phaser.State {
 
     preload() {
-        this.game.load.spritesheet('share-bg', 'assets/final/bg-fight.png');
-        this.game.load.image('replay', 'assets/final/home.png');
-        this.load.image('fbShare', 'assets/final/share-fb.png');
-        this.load.image('tweetShare', 'assets/final/share-twitter.png');
-        this.load.image('win', 'assets/final/win.png');
-        this.load.image('lose', 'assets/final/lose.png');
+
     }
 
     init(text) {

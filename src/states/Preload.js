@@ -4,26 +4,62 @@ import kapowWrapper from "../kapow/KapowWrapper";
 class Preload extends Phaser.State {
 
     preload() {
+        this.load.onLoadComplete.addOnce(this._onLoadComplete, this);
+
         var Font = "40px Comic Sans MS";
         this.loadText = this.add.text(this.world.centerX,this.world.centerY,'loading ',{font: Font, fill: '#ffffff', stroke: '#55B50D', strokeThickness: 3});
         this.loadText.anchor.setTo(0.5,0.5);
+
+        this.loading = new PhaserUi.ProgressBar(this.game, 1300, 150, PhaserUi.Graphics.roundedRectBmd, 4, '', 0xFFF000);
+        this.loading.x = this.game.world.centerX;
+        this.loading.y = this.game.world.centerY;
+
+        var self = this;
+        setTimeout(function () {
+            self.loading.progress = self.loading.progress + 0.1;
+        }, 1000);
+
+
+
         this.game.load.image('button', 'assets/playGame.png');
         this.game.load.audio('gameSound', 'assets/audio/Theme.mp3', true);
+        // Menu
+        this.game.load.image('bg', 'assets/final/welcome.png');
+        this.game.load.image('bt', 'assets/final/bt-play.png');
+        // Lobby
+        this.load.image("block1", "assets/final/lobby_prem.png");
+        this.load.image("block2", "assets/final/lobby_babu.png");
+        this.load.image("play", "assets/final/bt-battle.png");
+        // Arena
+        this.game.load.image('tom', 'assets/final/char-babuji-standing.png');
+        this.game.load.image('harry', 'assets/final/char-prem-standing.png');
+        this.game.load.image('babuji-loaded', 'assets/final/char-babuji-kalash.png');
+        this.game.load.image('prem-loaded', 'assets/final/char-prem-gun.png');
+        this.game.load.image('prem-hit', 'assets/final/char-prem-hit.png');
+        this.game.load.image('babuji-hit', 'assets/final/char-babuji-ouch.png');
+        this.game.load.image('wall', 'assets/final/wall.png');
+        this.game.load.image('bg', 'assets/final/bg-fight.png');
+        this.game.load.image('projectile', 'assets/final/projectile-bullet.png');
+        // Game over
+        this.game.load.spritesheet('share-bg', 'assets/final/bg-fight.png');
+        this.game.load.image('replay', 'assets/final/home.png');
+        this.load.image('fbShare', 'assets/final/share-fb.png');
+        this.load.image('tweetShare', 'assets/final/share-twitter.png');
+        this.load.image('win', 'assets/final/win.png');
+        this.load.image('lose', 'assets/final/lose.png');
+
+        this.game.load.crossOrigin = "anonymous";
     }
 
     create() {
         console.log("Loading started!");
-        this.theme = this.game.add.audio('gameSound');
 
+        this.theme = this.game.add.audio('gameSound');
         this.input.maxPointers = 1;
         this.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
         this.scale.pageAlignHorizontally = true;
         this.scale.pageAlignVertically = true;
         this.scale.forceOrientation(true, false);
-
-        this.loading = new PhaserUi.ProgressBar(this.game, 1300, 150, PhaserUi.Graphics.roundedRectBmd, 4, '', 0xFFF000);
-        this.loading.x = this.game.world.centerX;
-        this.loading.y = this.game.world.centerY;
 
         var self = this;
         this.game.sound.setDecodedCallback(['gameSound'], function(){
@@ -54,6 +90,10 @@ class Preload extends Phaser.State {
     }
 
     update() {
+
+    }
+
+    _onLoadComplete() {
 
     }
 }
