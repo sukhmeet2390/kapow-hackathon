@@ -122,6 +122,7 @@ class Arena extends Phaser.State {
         if (isWall) {
             console.log("You hit the wall");
         } else {
+            hitTo.playerHit();
             console.log("Player hit the other one ");
             if (isFirstPlayer) {
                 this.updateHealth2(0.5);
