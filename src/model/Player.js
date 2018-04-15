@@ -6,7 +6,7 @@ export default class Player {
         this.name = name;
         this.jid = jid;
         this.powers = powers;
-        this.health = new Health(100);
+        this.health = new Health(1);
     }
 
     isAlive() {

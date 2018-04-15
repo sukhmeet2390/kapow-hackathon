@@ -45,6 +45,19 @@ let HistoryWrapper = {
             }
             successCB(null);
         });
+    },
+    getLastSyncState(successCB) {
+        this.getAllMessages(function(messages) {
+            let n = messages.length;
+            for (var i = 0; i < n; i++) {
+                let message = messages[n - i - 1];
+                if (message.type == "move" && message.data.type == "SyncState") {
+                    successCB(message);
+                    return;
+                }
+            }
+            successCB(null);
+        })
     }
 };
 

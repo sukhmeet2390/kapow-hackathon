@@ -5,6 +5,8 @@ import MoveData from "../model/MoveData";
 import * as PhaserUi from "phaser-ui";
 import Tom from "../model/Toms";
 import Harry from "../model/Harry";
+import SyncState from "../model/SyncState";
+import Health from "../model/Health";
 
 class Arena extends Phaser.State {
 
@@ -30,8 +32,12 @@ class Arena extends Phaser.State {
 
     create() {
         console.log("Create of arena called!");
-        let style = { font: "bold 140px Arial", fill: "#FFFFFF"};
-        this.windText = this.game.add.text(300, 300, '', style);
+        this.game.add.image(0, 0, 'bg');
+
+        let style = { font: "bold 90px Arial", fill: "#FFFFFF"};
+        this.windText = this.game.add.text(this.game.world.centerX, 150, '', style);
+        this.windText.anchor.setTo(0.5);
+
         var self = this;
         kapowWrapper.getRoomInfo(function (room) {
             console.log("Room fetched : " + room);
@@ -67,7 +73,6 @@ class Arena extends Phaser.State {
     }
 
     createState() {
-        this.game.add.image(0, 0, 'bg');
         this.health1 = new PhaserUi.ProgressBar(this.game, 730, 70, PhaserUi.Graphics.roundedRectBmd, 4, '');
         this.health2 = new PhaserUi.ProgressBar(this.game, 730, 70, PhaserUi.Graphics.roundedRectBmd, 4, '');
         this.health1.x = 400;
@@ -152,7 +157,6 @@ class Arena extends Phaser.State {
                 this.updateHealth1(0.5);
             }
         }
-
         this.setTurn();
     }
 
@@ -202,25 +206,47 @@ class Arena extends Phaser.State {
         this.myChoice = myChoice;
         this.opponentChoice = opponentChoice;
 
-        if (myChoice === 0) {
-            this.secondPlayerSilhouette = new Tom(this.game, 1629, 690, 'tom', this.opponentID);
-            this.firstPlayerSilhouette = new Harry(this.game, 80, 690, 'harry', this.playerID);
-        } else {
-            this.secondPlayerSilhouette = new Harry(this.game, 1629, 690, 'harry', this.opponentID);
-            this.firstPlayerSilhouette = new Tom(this.game, 80, 690, 'tom', this.playerID);
-        }
+        var self = this;
 
-        console.log(this.firstPlayerSilhouette);
-        console.log(this.secondPlayerSilhouette);
-        this.game.physics.enable([this.firstPlayerSilhouette, this.secondPlayerSilhouette], Phaser.Physics.ARCADE);
+        HistoryWrapper.getLastSyncState(function(message) {
 
-        this.secondPlayerSilhouette.body.allowGravity = false;
-        this.firstPlayerSilhouette.body.allowGravity = false;
+            if (myChoice === 0) {
+                self.secondPlayerSilhouette = new Tom(self.game, 1629, 690, 'tom', self.opponentID);
+                self.firstPlayerSilhouette = new Harry(self.game, 80, 690, 'harry', self.playerID);
 
-        this.firstPlayerSilhouette.body.immovable = true;
-        this.secondPlayerSilhouette.body.immovable = true;
+            } else {
+                self.secondPlayerSilhouette = new Harry(self.game, 1629, 690, 'harry', self.opponentID);
+                self.firstPlayerSilhouette = new Tom(self.game, 80, 690, 'tom', self.playerID);
+            }
 
-        // this.addFacebookAvatars();
+            if (message) {
+                let p1 = message.data.tom;
+                let p2 = message.data.harry;
+                if (p1.player.jid === self.firstPlayerSilhouette.player.jid) {
+                    self.firstPlayerSilhouette.player.health = p1.player.health;
+                    self.secondPlayerSilhouette.player.health = p2.player.health;
+                } else {
+                    self.firstPlayerSilhouette.player.health = p2.player.health;
+                    self.secondPlayerSilhouette.player.health = p1.player.health;
+                }
+            }
+
+            self.health1.progress = self.firstPlayerSilhouette.player.health.value;
+            self.health2.progress = self.secondPlayerSilhouette.player.health.value;
+
+            console.log(self.firstPlayerSilhouette);
+            console.log(self.secondPlayerSilhouette);
+
+            self.game.physics.enable([self.firstPlayerSilhouette, self.secondPlayerSilhouette], Phaser.Physics.ARCADE);
+
+            self.secondPlayerSilhouette.body.allowGravity = false;
+            self.firstPlayerSilhouette.body.allowGravity = false;
+
+            self.firstPlayerSilhouette.body.immovable = true;
+            self.secondPlayerSilhouette.body.immovable = true;
+            // self.addFacebookAvatars();
+
+        });
     }
 
     addFacebookAvatars() {
@@ -325,7 +351,13 @@ class Arena extends Phaser.State {
     finishAnimation(weapon) {
         console.log("Animation finished!");
         this.killWeapon(weapon);
-        this.setTurn();
+    }
+
+    sendSyncState() {
+        let syncState = new SyncState(this.firstPlayerSilhouette, this.secondPlayerSilhouette);
+        kapowWrapper.callOnServer('sendTurn', new MoveData(syncState, this.playerID, this.opponentID), function() {
+            console.log("Sync state sent successfully!");
+        });
     }
 
     disableTurn() {
@@ -437,6 +469,8 @@ class Arena extends Phaser.State {
             console.log('U die', this.health2.progress);
             this.winner = this.firstPlayerSilhouette;
             this.endGame();
+        } else {
+            this.sendSyncState();
         }
     }
 
