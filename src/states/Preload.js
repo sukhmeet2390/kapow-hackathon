@@ -16,7 +16,7 @@ class Preload extends Phaser.State {
         this.scale.pageAlignVertically = true;
         this.scale.forceOrientation(true, false);
 
-        this.loading = new PhaserUi.ProgressBar(this.game, 600, 200, PhaserUi.Graphics.roundedRectBmd, 4, '', 0xFFF000);
+        this.loading = new PhaserUi.ProgressBar(this.game, 1300, 150, PhaserUi.Graphics.roundedRectBmd, 4, '', 0xFFF000);
         this.loading.x = this.game.world.centerX;
         this.loading.y = this.game.world.centerY;
 
@@ -25,7 +25,6 @@ class Preload extends Phaser.State {
             let prog = self.loading.progress;
             self.loading.progress = prog + 0.1;
             if (self.loading.progress >= 0.999999) {
-                console.log("Loading finished, calling Menu state");
                 clearTimeout(id);
                 self.game.state.start("Arena");
                 kapowWrapper.getRoomInfo(function (room) {
