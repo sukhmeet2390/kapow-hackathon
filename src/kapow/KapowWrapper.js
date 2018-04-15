@@ -17,7 +17,7 @@ let KapowWrapper = {
         kapow.endGame(ranks, roomId, successBack, errBack);
     },
 
-    share(text, medium, sucessBack, errBack) {
+    share(text, medium, successBack, errBack) {
         if (!errBack) errBack = this._errback;
         kapow.social.share(text, medium, successBack, errBack);
     },

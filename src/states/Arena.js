@@ -25,6 +25,8 @@ class Arena extends Phaser.State {
 
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.physics.arcade.gravity.y = 500;
+        this.game.physics.arcade.gravity.x = 0;
+        this.wind = 0;
     }
 
     create() {
@@ -49,8 +51,7 @@ class Arena extends Phaser.State {
                     var myId = owner.player.id;
                     if (message.data.ranks[myId] === 1) {
                         self.game.state.start("GameOver", true, null, "Win");
-                    }
-                    if (message.data.ranks[myId] === 2) {
+                    } else if (message.data.ranks[myId] === 2) {
                         self.game.state.start("GameOver", true, null, "Lose");
                     } else {
                         self.game.state.start("GameOver", true, null, null);
@@ -127,6 +128,7 @@ class Arena extends Phaser.State {
         } else {
             console.log("Player hit the other one ");
             if (isFirstPlayer) {
+<<<<<<< HEAD
                 if (this.secondPlayerSilhouette.player.name === "tom") {
                     this.firstPlayerSilhouette.loadTexture('babuji-hit');
                     var id = setTimeout(function(){
@@ -142,9 +144,9 @@ class Arena extends Phaser.State {
                     },1000);
 
                 }
-                this.updateHealth2(0.2)
+                this.updateHealth2(0.5);
             } else {
-                this.updateHealth1(0.2);
+                this.updateHealth1(0.5);
             }
         }
 
@@ -241,15 +243,15 @@ class Arena extends Phaser.State {
     updateArena() {
     }
 
-    sendMove(power, angle) {
+    sendMove(power, angle, wind) {
         console.log("calling sendMove");
         this.firstPlayerWeaponTransparent.kill();
-        let move = new Move(this.owner, this.opponentPlayer, power, angle, this.playerID);
+        let move = new Move(this.owner, this.opponentPlayer, power, angle, wind, this.playerID);
         let moveData = new MoveData(move, this.playerID, this.opponentID);
         let self = this;
         kapowWrapper.callOnServer('sendTurn', moveData, function () {
             console.log("Send turn success");
-            self.playMove(self.firstPlayerWeapon, power, angle);
+            self.playMove(self.firstPlayerWeapon, power, angle, wind);
         });
     }
 
@@ -259,12 +261,13 @@ class Arena extends Phaser.State {
         } else {
             moveMessage.data.angle = -180 - moveMessage.data.angle;
         }
-        this.playMove(this.secondPlayerWeapon, moveMessage.data.power, moveMessage.data.angle);
+        this.playMove(this.secondPlayerWeapon, moveMessage.data.power, moveMessage.data.angle, moveMessage.data.wind * -1);
     }
 
-    playMove(weapon, power, angle) {
-        console.log("Emulating move : ", this.game, angle, power, weapon.body.velocity);
+    playMove(weapon, power, angle, wind) {
+        console.log("Emulating move : ", this.game, angle, power, wind, weapon.body.velocity);
         weapon.body.allowGravity = true;
+        this.game.physics.arcade.gravity.x = wind;
         this.game.physics.arcade.velocityFromAngle(angle, power, weapon.body.velocity);
     }
 
@@ -317,9 +320,9 @@ class Arena extends Phaser.State {
     }
 
     killAllWeapons() {
-        // this.killWeapon(this.firstPlayerWeapon);
-        // this.killWeapon(this.firstPlayerWeaponTransparent);
-        // this.killWeapon(this.secondPlayerWeapon);
+        this.killWeapon(this.firstPlayerWeapon);
+        this.killWeapon(this.firstPlayerWeaponTransparent);
+        this.killWeapon(this.secondPlayerWeapon);
     }
 
     killWeapon(weapon) {
@@ -365,7 +368,7 @@ class Arena extends Phaser.State {
         let angle = this.getAngle(initialObject.position, draggedObject.position);
         console.log("Power : " + power + " and Angle : " + angle);
         this.killWeapon(this.firstPlayerWeaponTransparent);
-        this.sendMove(power, angle);
+        this.sendMove(power, angle, this.wind);
     }
 
     getAngle(initialPosition, finalPosition) {
