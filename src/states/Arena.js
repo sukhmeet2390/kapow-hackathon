@@ -127,17 +127,17 @@ class Arena extends Phaser.State {
             if (isFirstPlayer) {
                 if (this.secondPlayerSilhouette.player.name === "tom") {
                     this.firstPlayerSilhouette.loadTexture('babuji-hit', 0, true);
-                    var id = setTimeout(function(){
+                    var id = setTimeout(function () {
                         self.firstPlayerSilhouette.loadTexture("tom", 0, true);
                         clearTimeout(id);
-                    },1000);
+                    }, 1000);
                 }
                 if (this.secondPlayerSilhouette.player.name === "harry") {
                     this.firstPlayerSilhouette.loadTexture('prem-hit', 0, true);
-                    var id = setTimeout(function(){
+                    var id = setTimeout(function () {
                         self.firstPlayerSilhouette.loadTexture("harry", 0, true);
                         clearTimeout(id);
-                    },1000);
+                    }, 1000);
 
                 }
                 this.updateHealth2(0.5);
@@ -145,7 +145,12 @@ class Arena extends Phaser.State {
                 this.updateHealth1(0.5);
             }
         }
-        this.setTurn();
+
+        if (isFirstPlayer) {
+            this.sendSyncState();
+        } else {
+            this.setTurn();
+        }
     }
 
     initialise() {
@@ -282,7 +287,7 @@ class Arena extends Phaser.State {
     }
 
     playMove(weapon, power, angle, wind) {
-        console.log("Emulating move : ", this.game, angle, power, wind, weapon.body.velocity);
+        console.log("Emulating move : ", angle, power, wind, weapon.body.velocity);
         weapon.body.allowGravity = true;
         this.game.physics.arcade.gravity.x = wind;
         this.game.physics.arcade.velocityFromAngle(angle, power, weapon.body.velocity);
@@ -335,14 +340,20 @@ class Arena extends Phaser.State {
 
     finishAnimation(weapon) {
         console.log("Animation finished!");
+        if (weapon && weapon === this.firstPlayerWeapon) {
+            this.sendSyncState();
+        } else {
+            this.setTurn();
+        }
         this.killWeapon(weapon);
-        this.setTurn();
     }
 
     sendSyncState() {
+        var self = this;
         let syncState = new SyncState(this.firstPlayerSilhouette.player, this.secondPlayerSilhouette.player);
         kapowWrapper.callOnServer('sendTurn', new MoveData(syncState, this.playerID, this.opponentID), function() {
             console.log("Sync state sent successfully!");
+            self.setTurn();
         });
     }
 
@@ -455,8 +466,6 @@ class Arena extends Phaser.State {
             console.log('U die', this.health2.progress);
             this.winner = this.firstPlayerSilhouette;
             this.endGame();
-        } else {
-            this.sendSyncState();
         }
     }
 
