@@ -57,6 +57,10 @@ class Arena extends Phaser.State {
         var callback = function () {
             this.secondPlayerSilhouette = new Tom(this.game, 1629, 690, 'tom', this.opponentID);
             this.firstPlayerSilhouette = new Harry(this.game, 80, 690, 'harry', this.playerID);
+
+            console.log(this.firstPlayerSilhouette);
+            console.log(this.secondPlayerSilhouette);
+
             this.game.physics.enable([this.firstPlayerSilhouette, this.secondPlayerSilhouette], Phaser.Physics.ARCADE);
 
             this.secondPlayerSilhouette.body.allowGravity = false;
@@ -64,7 +68,6 @@ class Arena extends Phaser.State {
 
             this.firstPlayerSilhouette.body.immovable = true;
             this.secondPlayerSilhouette.body.immovable = true;
-            this._isLoaded = true;
         }.bind(this);
 
         this.initialise(callback);
