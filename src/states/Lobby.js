@@ -6,16 +6,8 @@ import MoveData from "../model/MoveData";
 import * as PhaserUi from "phaser-ui";
 
 class Lobby extends Phaser.State {
-    someFunc(){
-
-
-    }
-
     preload() {
         console.log("Lobby Preload");
-        this.load.image("block1", "assets/final/lobby_prem.png");
-        this.load.image("block2", "assets/final/lobby_babu.png");
-        this.load.image("play", "assets/final/bt-battle.png");
         this.slider = new phaseSlider(this.game);
     }
 
