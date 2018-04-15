@@ -16,8 +16,6 @@ class Preload extends Phaser.State {
         }, 1000);
 
 
-
-        this.game.load.image('button', 'assets/playGame.png');
         this.game.load.audio('gameSound', 'assets/audio/Theme.mp3', true);
         // Menu
         this.game.load.image('welcome', 'assets/final/welcome.png');
