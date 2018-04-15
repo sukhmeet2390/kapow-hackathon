@@ -13,4 +13,20 @@ export default class Tom extends Phaser.Sprite {
         this.image = this.game.add.sprite(x, y, label);
         this.player = new Player("Tom", jid, [new Power("sanskar", 10), new Power("heart", 10)]);
     }
+
+    playerHit() {
+        let self = this;
+        let label = 'tom-hit-left';
+        let x = this.position.x;
+        let y = this.position.y;
+
+        if (x > 600) {
+            label = 'tom-hit-right';
+        }
+        self.hitImage = this.game.add.sprite(x, y, label);
+
+        setInterval(function () {
+            self.hitImage.destroy();
+        }, 200);
+    }
 }
