@@ -6,11 +6,7 @@ class Preload extends Phaser.State {
     preload() {
         this.load.onLoadComplete.addOnce(this._onLoadComplete, this);
 
-        var Font = "40px Comic Sans MS";
-        this.loadText = this.add.text(this.world.centerX,this.world.centerY,'loading ',{font: Font, fill: '#ffffff', stroke: '#55B50D', strokeThickness: 3});
-        this.loadText.anchor.setTo(0.5,0.5);
-
-        this.loading = new PhaserUi.ProgressBar(this.game, 1300, 150, PhaserUi.Graphics.roundedRectBmd, 4, '', 0xFFF000);
+        this.loading = new PhaserUi.ProgressBar(this.game, 1300, 100, PhaserUi.Graphics.roundedRectBmd, 4, '', 0xFFF000);
         this.loading.x = this.game.world.centerX;
         this.loading.y = this.game.world.centerY;
 
