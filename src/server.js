@@ -9,7 +9,7 @@ var game = {
     },
     initialiseRoom: function (playerId) {
     	console.log("SERVER setNextPlayer called : " + JSON.stringify(playerId));
-    	let room = kapow.getRoomInfo();
+    	var room = kapow.getRoomInfo();
     	kapow.setNextPlayer(playerId, room.roomId, function() {
             console.log("Next player set!");
     		kapow.return(true);

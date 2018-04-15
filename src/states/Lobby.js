@@ -24,7 +24,7 @@ class Lobby extends Phaser.State {
         var self = this;
         kapowWrapper.getUserInfo(function(user) {
             var chooserId = user.player.id;
-            let characterChosen = new CharacterChosen(chosenCharacter, chooserId);
+            var characterChosen = new CharacterChosen(chosenCharacter, chooserId);
             kapowWrapper.getRoomInfo(function(room) {
                 var opponentId = null;
                 for (var i = 0; i < 2; i++) {
@@ -33,12 +33,18 @@ class Lobby extends Phaser.State {
                     }
                 }
 
+                console.log("Chooser : " + chooserId);
+                console.log("Character chosen : " + characterChosen);
+
                 kapowWrapper.callOnServer('initialiseRoom', chooserId, function() {
+                    console.log("Room init called!");
                     kapowWrapper.callOnServer('sendData', new MoveData(characterChosen, chooserId, opponentId),
                         function() {
                             console.log("Character choose turn sent!");
                             self.game.state.start("Arena");
                         });
+                }, function(error) {
+                    console.log("Error in room init : " + error);
                 });
             });
         });
