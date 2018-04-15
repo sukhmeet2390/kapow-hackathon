@@ -26,11 +26,13 @@ class Preload extends Phaser.State {
         this.load.image("play", "assets/final/bt-battle.png");
         // Arena
         this.game.load.image('tom', 'assets/final/char-babuji-standing.png');
+        this.game.load.image('tom-hit', 'assets/final/char-babuji-ouch.png');
+        this.game.load.image('tom-loaded', 'assets/final/char-babuji-kalash.png');
+
         this.game.load.image('harry', 'assets/final/char-prem-standing.png');
-        this.game.load.image('babuji-loaded', 'assets/final/char-babuji-kalash.png');
-        this.game.load.image('prem-loaded', 'assets/final/char-prem-gun.png');
-        this.game.load.image('prem-hit', 'assets/final/char-prem-hit.png');
-        this.game.load.image('babuji-hit', 'assets/final/char-babuji-ouch.png');
+        this.game.load.image('harry-loaded', 'assets/final/char-prem-gun.png');
+        this.game.load.image('harry-hit', 'assets/final/char-prem-hit.png');
+
         this.game.load.image('wall', 'assets/final/wall.png');
         this.game.load.image('bg', 'assets/final/bg-fight.png');
         this.game.load.image('projectile', 'assets/final/projectile-bullet.png');
