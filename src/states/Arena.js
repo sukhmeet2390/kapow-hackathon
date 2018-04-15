@@ -234,13 +234,15 @@ class Arena extends Phaser.State {
         let self = this;
         kapowWrapper.getRoomInfo(function (room) {
             self.room = room;
-            if (!room.nextPlayerId) {
-                console.log("No next player set");
-            }
-            else if (room.nextPlayerId === self.playerID) {
-                self.enableTurn();
-            } else {
-                self.disableTurn();
+            if (room.players[0].affiliation == "accepted" && room.players[1].affiliation == "accepted") {
+                if (!room.nextPlayerId) {
+                    console.log("No next player set");
+                }
+                else if (room.nextPlayerId === self.playerID) {
+                    self.enableTurn();
+                } else {
+                    self.disableTurn();
+                }
             }
         });
     }
