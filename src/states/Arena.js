@@ -20,6 +20,7 @@ class Arena extends Phaser.State {
     create() {
         console.log("Create of arena called!");
         this.game.add.image(0, 0, 'bg');
+        this.game.sound.stopAll();
 
         let style = { font: "bold 90px Arial", fill: "#FFFFFF"};
         this.windText = this.game.add.text(this.game.world.centerX, 150, '', style);

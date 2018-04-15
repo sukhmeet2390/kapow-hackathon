@@ -11,13 +11,6 @@ class GameController {
     }
 
     initNewGame() {
-        // move to character selection screen
-        // start a room
-        // once done, call invoke RPC to store room details in db on server
-        // Waiting mode in arena-
-        KapowWrapper.startSoloGame(function (room) {
-            console.log("Started a new room", room);
-        });
     }
 
     startOldGame() {
