@@ -7,21 +7,16 @@ var game = {
         console.log("SERVER onMessageDelivered : " + JSON.stringify(data));
         kapow.return();
     },
-
-    onPlayerJoined: function (playerObj) {
-    	console.log("SERVER onPlayerJoined called : " + JSON.stringify(playerObj));
-    	var createMoveObject = function(data, playerId){
-            var room = kapow.getRoomInfo();
-            var opponent = (room.players[0] === playerId) ? room.players[1] : room.players[0];
-            var moveObj = {};
-            moveObj["move"] = data;
-            moveObj["player"] = playerId;
-            moveObj["opponent"] = opponent;
-            return moveObj;
-		};
-        var move = createMoveObject("", playerObj.id);
-        game.sendTurn(move);
-        // kapow.return();
+    initialiseRoom: function (playerId) {
+    	console.log("SERVER setNextPlayer called : " + JSON.stringify(playerId));
+    	let room = kapow.getRoomInfo();
+    	kapow.setNextPlayer(playerId, room.roomId, function() {
+            console.log("Next player set!");
+    		kapow.return(true);
+		}, function(error) {
+    		console.log("Error in init room!");
+    		kapow.return(null, error);
+		});
     },
     createMoveObject: function(data, playerId) {
         var room = kapow.getRoomInfo();
