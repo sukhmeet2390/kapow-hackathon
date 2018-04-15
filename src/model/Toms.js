@@ -28,7 +28,7 @@ export default class Tom extends Phaser.Sprite {
 
         setInterval(function () {
             self.hitImage.destroy();
-        }, 200);
+        }, 400);
     }
 
     playSuccess() {
