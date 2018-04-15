@@ -21,7 +21,15 @@ class Arena extends Phaser.State {
 
     create() {
         console.log("Create of arena called!");
-        this.checkGameState();
+        var self = this;
+        kapowWrapper.getRoomInfo(function(room) {
+            console.log("Room fetched : " + room);
+            if (!room) {
+                self.game.state.start("Menu");
+            } else {
+                self.checkGameState();
+            }
+        });
     }
 
     checkGameState() {
