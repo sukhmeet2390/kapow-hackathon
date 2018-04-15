@@ -174,10 +174,8 @@ class Arena extends Phaser.State {
     getPlayers() {
         var self = this;
         HistoryWrapper.getChoice(self.playerID, function (message) {
-            console.log(JSON.stringify(message) + " " + self.playerID);
             if (!message) {
                 HistoryWrapper.getChoice(self.opponentID, function (message) {
-                    console.log(JSON.stringify(message) + " " + self.opponentID);
                     var opponentChoice = message.data.characterId;
                     self.respectChoices(1 - opponentChoice, opponentChoice);
                 });
