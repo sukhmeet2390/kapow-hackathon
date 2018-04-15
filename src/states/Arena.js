@@ -50,6 +50,7 @@ class Arena extends Phaser.State {
                 console.log("Game already ended in room!");
                 kapowWrapper.getUserInfo(function (owner) {
                     var myId = owner.player.id;
+                    console.log(JSON.stringify(message) + " " + JSON.stringify(owner));
                     if (message.data.ranks[myId] === 1) {
                         self.game.state.start("GameOver", true, false, "Win");
                     } else if (message.data.ranks[myId] === 2) {
