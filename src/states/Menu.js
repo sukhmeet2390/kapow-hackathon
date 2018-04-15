@@ -6,7 +6,7 @@ class Menu extends Phaser.State {
     }
 
     create() {
-        let bg = this.game.add.image(0, 0, 'bg');
+        let bg = this.game.add.image(0, 0, 'welcome');
         let button = this.game.add.button(784, 782, 'bt', this.actionOnClick, this, 2, 1, 0);
     }
 

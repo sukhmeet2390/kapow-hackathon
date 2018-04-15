@@ -126,16 +126,16 @@ class Arena extends Phaser.State {
             console.log("Player hit the other one ");
             if (isFirstPlayer) {
                 if (this.secondPlayerSilhouette.player.name === "tom") {
-                    this.firstPlayerSilhouette.loadTexture('babuji-hit');
+                    this.firstPlayerSilhouette.loadTexture('babuji-hit', 0, true);
                     var id = setTimeout(function(){
-                        self.firstPlayerSilhouette.loadTexture("tom");
+                        self.firstPlayerSilhouette.loadTexture("tom", 0, true);
                         clearTimeout(id);
                     },1000);
                 }
                 if (this.secondPlayerSilhouette.player.name === "harry") {
-                    this.firstPlayerSilhouette.loadTexture('prem-hit');
+                    this.firstPlayerSilhouette.loadTexture('prem-hit', 0, true);
                     var id = setTimeout(function(){
-                        self.firstPlayerSilhouette.loadTexture("harry");
+                        self.firstPlayerSilhouette.loadTexture("harry", 0, true);
                         clearTimeout(id);
                     },1000);
 
@@ -303,10 +303,10 @@ class Arena extends Phaser.State {
         this.firstPlayerWeapon.events.onOutOfBounds.add(this.finishAnimation, this, 0, this.firstPlayerWeapon);
         if (this.firstPlayerSilhouette && this.firstPlayerSilhouette.player.name === "Tom") {
             console.log("Changing textur tom to loaded");
-            this.firstPlayerSilhouette.loadTexture('babuji-loaded');
+            this.firstPlayerSilhouette.loadTexture('babuji-loaded', 0, true);
         } else if (this.firstPlayerSilhouette && this.firstPlayerSilhouette.player.name === "Harry") {
             console.log("Changing textur harry to loaded");
-            this.firstPlayerSilhouette.loadTexture('prem-loaded');
+            this.firstPlayerSilhouette.loadTexture('prem-loaded', 0, true);
         } else {
             console.log("Neither tom or harry " + this.firstPlayerSilhouette);
         }
@@ -356,10 +356,10 @@ class Arena extends Phaser.State {
         this.secondPlayerWeapon.body.allowGravity = false;
         if (this.firstPlayerSilhouette && this.firstPlayerSilhouette.player.name === "Tom") {
             console.log("Changing textur tom to unloaded");
-            this.firstPlayerSilhouette.loadTexture('tom');
+            this.firstPlayerSilhouette.loadTexture('tom', 0, true);
         } else if (this.firstPlayerSilhouette && this.firstPlayerSilhouette.player.name === "Harry") {
             console.log("Changing textur harry to unloaded");
-            this.firstPlayerSilhouette.loadTexture('harry');
+            this.firstPlayerSilhouette.loadTexture('harry', 0, true);
         } else {
             console.log("Neither tom or harry " + this.firstPlayerSilhouette);
         }
