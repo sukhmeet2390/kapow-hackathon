@@ -12,7 +12,6 @@ class Arena extends Phaser.State {
 
     preload() {
 
-        this.game.load.image('harry-sprite', 'assets/final/prem-sprite.png');
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.physics.arcade.gravity.y = 500;
         this.game.physics.arcade.gravity.x = 0;
@@ -166,7 +165,6 @@ class Arena extends Phaser.State {
                         self.opponentID = room.players[i].id;
                     }
                 }
-                console.log(self);
                 console.log("UserJID : " + self.playerID);
                 console.log("opponentJID : " + self.opponentID);
                 self.getPlayers();
@@ -203,10 +201,10 @@ class Arena extends Phaser.State {
 
             if (myChoice === 0) {
                 self.secondPlayerSilhouette = new Tom(self.game, 1629, 690, 'tom', self.opponentID);
-                self.firstPlayerSilhouette = new Harry(self.game, 80, 690, 'harry-sprite', self.playerID);
+                self.firstPlayerSilhouette = new Harry(self.game, 80, 690, 'harry', self.playerID);
 
             } else {
-                self.secondPlayerSilhouette = new Harry(self.game, 1629, 690, 'harry-sprite', self.opponentID);
+                self.secondPlayerSilhouette = new Harry(self.game, 1629, 690, 'harry', self.opponentID);
                 self.firstPlayerSilhouette = new Tom(self.game, 80, 690, 'tom', self.playerID);
             }
 
@@ -216,16 +214,18 @@ class Arena extends Phaser.State {
                 console.log("p1 = " + JSON.stringify(p1));
                 console.log("p1 = " + JSON.stringify(p2));
                 if (p1.jid === self.firstPlayerSilhouette.player.jid) {
-                    self.firstPlayerSilhouette.player.health = p1.health;
-                    self.secondPlayerSilhouette.player.health = p2.health;
+                    self.firstPlayerSilhouette.player.health.value = p1.health.value;
+                    self.secondPlayerSilhouette.player.health.value = p2.health.value;
                 } else {
-                    self.firstPlayerSilhouette.player.health = p2.health;
-                    self.secondPlayerSilhouette.player.health = p1.health;
+                    self.firstPlayerSilhouette.player.health.value = p2.health.value;
+                    self.secondPlayerSilhouette.player.health.value = p1.health.value;
                 }
             }
 
             self.health1.progress = self.firstPlayerSilhouette.player.health.value;
             self.health2.progress = self.secondPlayerSilhouette.player.health.value;
+
+            console.log(self.health1.progress + " " + self.health2.progress);
 
             console.log(self.firstPlayerSilhouette);
             console.log(self.secondPlayerSilhouette);
@@ -351,6 +351,7 @@ class Arena extends Phaser.State {
     sendSyncState() {
         var self = this;
         let syncState = new SyncState(this.firstPlayerSilhouette.player, this.secondPlayerSilhouette.player);
+        console.log("Sync state : " + JSON.stringify(syncState));
         kapowWrapper.callOnServer('sendTurn', new MoveData(syncState, this.playerID, this.opponentID), function() {
             console.log("Sync state sent successfully!");
             self.disableTurn();
@@ -384,6 +385,14 @@ class Arena extends Phaser.State {
 
     killWeapon(weapon) {
         weapon && weapon.destroy();
+    }
+
+    turnChange(player) {
+        if (player.id === this.playerID) {
+            this.enableTurn();
+        } else {
+            this.disableTurn();
+        }
     }
 
     setTurn() {
@@ -449,7 +458,7 @@ class Arena extends Phaser.State {
     updateHealth1(value) {
         let progress = this.health1.progress;
         this.health1.progress = progress - value;
-        this.firstPlayerSilhouette.player.health = progress - value;
+        this.firstPlayerSilhouette.player.health.value = progress - value;
         if (this.health1.progress < 0.1) {
             console.log('U die', this.health1.progress);
             this.winner = this.secondPlayerSilhouette;
@@ -461,7 +470,7 @@ class Arena extends Phaser.State {
     updateHealth2(value) {
         let progress = this.health2.progress;
         this.health2.progress = progress - value;
-        this.secondPlayerSilhouette.player.health = progress - value;
+        this.secondPlayerSilhouette.player.health.value = progress - value;
         if (this.health2.progress < 0.1) {
             console.log('U die', this.health2.progress);
             this.winner = this.firstPlayerSilhouette;

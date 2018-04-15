@@ -11,7 +11,7 @@ let EventHandler = {
         this.arenaController = new ArenaController(game);
         pubsub.subscribe("menu/playButtonClicked", this.gameController.initNewGame);
         pubsub.subscribe("kapow/game/messageReceived", this._handleMessage);
-        // pubsub.subscribe("kapow/game/turnChange", this._handleTurnChange);
+        pubsub.subscribe("kapow/game/turnChange", this._handleTurnChange);
         pubsub.subscribe("kapow/game/playerJoined", this._handlePlayerJoined);
         pubsub.subscribe("kapow/game/backButtonPressed", this._handleBackButton);
     },
@@ -21,10 +21,12 @@ let EventHandler = {
     },
     _handleTurnChange(player) {
         console.log("Handle turn change ", player);
+        if (window.phasergame.state.current !== "Arena") return;
         window.phasergame.state.states.Arena.turnChange(player);
     },
     _handlePlayerJoined(player) {
         console.log("Handle turn change ", player);
+        if (window.phasergame.state.current !== "Arena") return;
         window.phasergame.state.states.Arena.setTurn();
     },
     _handleMessage(message) {
@@ -32,6 +34,7 @@ let EventHandler = {
         switch (message.type) {
             case "move":
                 if(message.data.type === "Move"){
+                    if (window.phasergame.state.current !== "Arena") return;
                     window.phasergame.state.states.Arena.opponentMove(message);
                 }
                 break;
