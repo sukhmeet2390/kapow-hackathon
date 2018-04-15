@@ -75,11 +75,11 @@ window.game = {
     },
     onResume: function () {
         console.log(':: On Resume Triggered. ::');
-        pubsub.publish("kapow/game/resumed", []);
+        pubsub.publish("kapow/game/resumed", [true]);
     },
     onBackButtonPressed: function () {
         console.log(':: Back button press Triggered. ::');
-        pubsub.publish("kapow/game/backButtonPressed", []);
+        pubsub.publish("kapow/game/backButtonPressed", [true]);
         return true;
     },
     onGameEnd: function (outcome) {

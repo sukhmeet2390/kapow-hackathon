@@ -44,7 +44,7 @@ class Arena extends Phaser.State {
                         self.game.state.start("GameOver", true, null, "Win");
                     }
                     if (message.data.ranks[myId] === 2) {
-                        self.game.state.start("GameOver", true, null, "Loose");
+                        self.game.state.start("GameOver", true, null, "Lose");
                     } else {
                         self.game.state.start("GameOver", true, null, null);
                     }
@@ -313,10 +313,10 @@ class Arena extends Phaser.State {
             console.log("loser", loserId);
             kapowWrapper.callOnServer('endGameOnServer', loserId, function () {
                 console.log("Ranks success");
-                self.game.state.start("GameOver", true, false, "You Win !!");
+                self.game.state.start("GameOver", true, false, "Win");
             });
         } else {
-            this.game.state.start("GameOver", true, false, "You Lose!!");
+            this.game.state.start("GameOver", true, false, "Lose");
         }
     }
 
