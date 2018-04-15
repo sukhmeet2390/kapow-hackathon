@@ -12,7 +12,7 @@ class Arena extends Phaser.State {
         this.game.load.image('tom', 'assets/tom.png');
         this.game.load.image('harry', 'assets/harry.png');
         this.game.load.image('wall', 'assets/wall.png');
-         this.game.load.image('projectile', 'assets/projectile.png');
+        this.game.load.image('projectile', 'assets/projectile.png');
 
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.physics.arcade.gravity.y = 500;
