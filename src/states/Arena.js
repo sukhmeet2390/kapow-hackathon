@@ -129,7 +129,7 @@ class Arena extends Phaser.State {
         } else {
             console.log("Player hit the other one ");
             if (isFirstPlayer) {
-<<<<<<< HEAD
+// <<<<<<< HEAD
                 if (this.secondPlayerSilhouette.player.name === "tom") {
                     this.firstPlayerSilhouette.loadTexture('babuji-hit');
                     var id = setTimeout(function(){
