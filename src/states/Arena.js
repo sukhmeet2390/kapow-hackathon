@@ -353,7 +353,7 @@ class Arena extends Phaser.State {
         let syncState = new SyncState(this.firstPlayerSilhouette.player, this.secondPlayerSilhouette.player);
         kapowWrapper.callOnServer('sendTurn', new MoveData(syncState, this.playerID, this.opponentID), function() {
             console.log("Sync state sent successfully!");
-            self.setTurn();
+            self.disableTurn();
         });
     }
 
