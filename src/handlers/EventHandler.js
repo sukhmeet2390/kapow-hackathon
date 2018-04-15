@@ -13,6 +13,10 @@ let EventHandler = {
         pubsub.subscribe("kapow/game/messageReceived", this._handleMessage);
         // pubsub.subscribe("kapow/game/turnChange", this._handleTurnChange);
         pubsub.subscribe("kapow/game/playerJoined", this._handlePlayerJoined);
+        pubsub.subscribe("kapow/game/backButtonPressed", this._handleBackButton());
+    },
+    _handleBackButton() {
+        console.log("Handling back button press!");
     },
     _handleTurnChange(player) {
         console.log("Handle turn change ", player);
