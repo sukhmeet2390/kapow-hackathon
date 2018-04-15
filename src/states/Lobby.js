@@ -62,7 +62,7 @@ class Lobby extends Phaser.State {
         btn.inputEnabled = true;
 
         var self = this;
-        btn.events.onInputDown.addOnce(function (e, pointer) {
+        btn.events.onInputDown.add(function (e, pointer) {
             var index = self.slider.getCurrentIndex();
             console.log("Selected char ", index);
             self.onClick(index);
