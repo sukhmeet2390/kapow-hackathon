@@ -56,7 +56,7 @@ class Arena extends Phaser.State {
     addPlayers() {
         var callback = function () {
             this.secondPlayerSilhouette = new Tom(this.game, 1629, 690, 'tom', this.opponentID);
-            this.firstPlayerSilhouette = new Harry(this.game, 1629, 690, 'harry', this.playerID);
+            this.firstPlayerSilhouette = new Harry(this.game, 80, 690, 'harry', this.playerID);
             this.game.physics.enable([this.firstPlayerSilhouette, this.secondPlayerSilhouette], Phaser.Physics.ARCADE);
 
             this.secondPlayerSilhouette.body.allowGravity = false;
@@ -181,7 +181,7 @@ class Arena extends Phaser.State {
         let self = this;
         kapowWrapper.callOnServer('sendTurn', moveData, function () {
             console.log("Send turn success");
-            self.playMove(this.firstPlayerWeapon, power, angle);
+            self.playMove(self.firstPlayerWeapon, power, angle);
         });
     }
 
@@ -215,6 +215,7 @@ class Arena extends Phaser.State {
     }
 
     finishAnimation(weapon) {
+        console.log("Animation finished!");
         this.killWeapon(weapon);
         this.setTurn();
     }
