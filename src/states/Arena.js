@@ -186,10 +186,10 @@ class Arena extends Phaser.State {
             }
             self.game.load.start();
             self.game.load.onLoadComplete.add(function() {
-                let myImage = self.game.add.sprite(750, 50, "avatar_" + self.playerID);
-                let oppImage = self.game.add.sprite(1050, 50, "avatar_" + self.opponentID);
-                console.log(myImage);
-                console.log(oppImage);
+                self.myImage = self.game.add.sprite(750, 50, "avatar_" + self.playerID);
+                self.oppImage = self.game.add.sprite(1050, 50, "avatar_" + self.opponentID);
+                console.log(self.myImage);
+                console.log(self.oppImage);
             }, self);
         });
     }
