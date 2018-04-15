@@ -12,6 +12,7 @@ export default class Harry extends Phaser.Sprite {
         super(game, x, y, label);
         this.anchor.setTo(0.5);
         this.image = this.game.add.sprite(x, y, label);
+        this.image.scale.setTo(1.23, 1.23);
         this.player = new Player("Harry", jid, [new Power("gun", 10), new Power("heart", 10)]);
     }
 
@@ -28,6 +29,6 @@ export default class Harry extends Phaser.Sprite {
 
         setInterval(function () {
             self.hitImage.destroy();
-        }, 200);
+        }, 400);
     }
 }
