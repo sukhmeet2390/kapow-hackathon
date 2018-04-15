@@ -355,6 +355,14 @@ class Arena extends Phaser.State {
             this.endGame();
         }
     }
+
+    _handleBackButton() {
+        console.log("Back button inside arena!");
+        kapow.unloadRoom(function() {
+            console.log("Unloaded room");
+            kapow.close();
+        });
+    }
 }
 
 export default Arena;

@@ -47,6 +47,14 @@ class GameOver extends Phaser.State {
             console.log('Tweet Share successful');
         });
     }
+
+    _handleBackButton() {
+        console.log("Back button inside game over!");
+        kapow.unloadRoom(function() {
+            console.log("Unloaded room");
+            kapow.close();
+        });
+    }
 }
 
 export default GameOver;

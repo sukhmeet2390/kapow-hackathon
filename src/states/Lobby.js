@@ -90,6 +90,11 @@ class Lobby extends Phaser.State {
             });
     }
 
+    _handleBackButton() {
+        console.log("Back button inside Lobby!");
+        this.game.state.start("Menu");
+    }
+
     update() {
     }
 }

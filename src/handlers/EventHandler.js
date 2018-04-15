@@ -17,6 +17,7 @@ let EventHandler = {
     },
     _handleBackButton() {
         console.log("Handling back button press!");
+        window.phasergame.state.getCurrentState()._handleBackButton();
     },
     _handleTurnChange(player) {
         console.log("Handle turn change ", player);

@@ -29,6 +29,11 @@ class Menu extends Phaser.State {
         }
     }
 
+    _handleBackButton() {
+        console.log("Back button inside Menu!");
+        kapow.close();
+    }
+
     update() {
     }
 
