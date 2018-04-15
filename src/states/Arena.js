@@ -13,9 +13,19 @@ class Arena extends Phaser.State {
         this.game.load.image('harry', 'assets/final/char-prem-standing.png');
         this.game.load.image('wall', 'assets/wall.png');
         this.game.load.image('projectile', 'assets/final/projectile-bullet.png');
+        this.game.load.crossOrigin = "anonymous";
 
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.physics.arcade.gravity.y = 500;
+
+        var self = this;
+
+        kapowWrapper.getRoomInfo(function(room) {
+            var players = room.players;
+            for (var i = 0; i < 2; i++) {
+                self.game.load.image("avatar_" + players[i].id, players[i].profileImage + "?height=100&width=100");
+            }
+        });
     }
 
     create() {
@@ -51,10 +61,6 @@ class Arena extends Phaser.State {
         this.wall.body.allowGravity = false;
         this.wall.body.immovable = true;
 
-        this.addPlayers();
-    }
-
-    addPlayers() {
         this.initialise();
     }
 
@@ -164,16 +170,25 @@ class Arena extends Phaser.State {
             this.firstPlayerSilhouette = new Tom(this.game, 80, 690, 'tom', this.playerID);
         }
 
-            console.log(this.firstPlayerSilhouette);
-            console.log(this.secondPlayerSilhouette);
+        console.log(this.firstPlayerSilhouette);
+        console.log(this.secondPlayerSilhouette);
+        this.game.physics.enable([this.firstPlayerSilhouette, this.secondPlayerSilhouette], Phaser.Physics.ARCADE);
 
-            this.game.physics.enable([this.firstPlayerSilhouette, this.secondPlayerSilhouette], Phaser.Physics.ARCADE);
+        this.secondPlayerSilhouette.body.allowGravity = false;
+        this.firstPlayerSilhouette.body.allowGravity = false;
 
-            this.secondPlayerSilhouette.body.allowGravity = false;
-            this.firstPlayerSilhouette.body.allowGravity = false;
+        this.firstPlayerSilhouette.body.immovable = true;
+        this.secondPlayerSilhouette.body.immovable = true;
 
-            this.firstPlayerSilhouette.body.immovable = true;
-            this.secondPlayerSilhouette.body.immovable = true;
+        this.addFacebookAvatars();
+    }
+
+    addFacebookAvatars() {
+        console.log("Adding facebook images");
+        var myImage = this.game.add.sprite(750, 50, "avatar_" + this.playerID);
+        var oppImage = this.game.add.sprite(1050, 50, "avatar_" + this.opponentID);
+        console.log(myImage);
+        console.log(oppImage);
     }
 
     updateArena() {
