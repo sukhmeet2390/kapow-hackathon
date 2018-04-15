@@ -9,10 +9,11 @@ import Harry from "../model/Harry";
 class Arena extends Phaser.State {
 
     preload() {
+        this._isLoaded = false;
         this.game.load.image('tom', 'assets/final/char-babuji-standing.png');
         this.game.load.image('harry', 'assets/final/char-prem-standing.png');
         this.game.load.image('wall', 'assets/wall.png');
-         this.game.load.image('projectile', 'assets/final/projectile-bullet.png');
+        this.game.load.image('projectile', 'assets/final/projectile-bullet.png');
 
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.physics.arcade.gravity.y = 500;
@@ -50,7 +51,6 @@ class Arena extends Phaser.State {
         this.game.physics.enable([this.wall], Phaser.Physics.ARCADE);
 
         this.addPlayers();
-        this._isLoaded = false;
     }
 
     addPlayers() {

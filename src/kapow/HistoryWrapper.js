@@ -34,7 +34,7 @@ let HistoryWrapper = {
         this.getAllMessages(function(messages) {
             let n = messages.length;
             for (var i = 0; i < n; i++) {
-                let message = message[n - i - 1];
+                let message = messages[n - i - 1];
                 if (message.type == "outcome") {
                     successCB(message);
                 }
