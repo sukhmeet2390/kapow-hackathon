@@ -30,6 +30,8 @@ class Arena extends Phaser.State {
 
     create() {
         console.log("Create of arena called!");
+        let style = { font: "bold 140px Arial", fill: "#FFFFFF"};
+        this.windText = this.game.add.text(300, 300, '', style);
         var self = this;
         kapowWrapper.getRoomInfo(function (room) {
             console.log("Room fetched : " + room);
@@ -277,8 +279,7 @@ class Arena extends Phaser.State {
         this.killAllWeapons();
         this.firstPlayerWeapon = this.game.add.sprite(300, 600, 'projectile');
         this.firstPlayerWeaponTransparent = this.game.add.sprite(300, 600, 'projectile');
-        this.game.physics.enable([this.firstPlayerWeapon, this.firstPlayerWeaponTransparent], Phaser.Physics.ARCADE);
-        this.firstPlayerWeaponTransparent.body.allowGravity = false;
+        this.game.physics.enable([this.firstPlayerWeapon], Phaser.Physics.ARCADE);
         this.firstPlayerWeapon.body.allowGravity = false;
         this.firstPlayerWeaponTransparent.inputEnabled = true;
         this.firstPlayerWeaponTransparent.alpha = 0.4;
@@ -298,7 +299,23 @@ class Arena extends Phaser.State {
     }
 
     displayWind() {
-        console.log("Wind speed : " + this.game.physics.arcade.gravity.x);
+        let wind = this.game.physics.arcade.gravity.x;
+        console.log("wind : " + wind);
+        if (wind && wind > 0) {
+            let times = (wind + 59) / 60;
+            let windString = "";
+            while (times > 0) {
+                windString += "-";
+                times -= 1;
+            }
+            windString += ">";
+            console.log(windString);
+            this.windText.text = windString;
+            this.windText.visible = true;
+        } else {
+            this.windText.visible = false;
+        }
+        console.log(this.windText);
     }
 
     getRandomWind() {
