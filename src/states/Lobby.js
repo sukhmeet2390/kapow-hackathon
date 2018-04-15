@@ -15,7 +15,7 @@ class Lobby extends Phaser.State {
         console.log("Lobby Preload");
         this.load.image("block1", "assets/final/lobby_prem.png");
         this.load.image("block2", "assets/final/lobby_babu.png");
-        this.load.image("play", "assets/bt-battle.png");
+        this.load.image("play", "assets/final/bt-battle.png");
         this.slider = new phaseSlider(this.game);
     }
 
@@ -50,9 +50,7 @@ class Lobby extends Phaser.State {
 
     create() {
         let block1 = this.game.add.image(0, 0, "block1");
-        block1.scale.setTo(0.23,0.25);
         let block2 = this.game.add.image(0, 0, "block2");
-        block2.scale.setTo(0.23,0.25);
 
         this.slider.createSlider({
             customSliderBG: false,
@@ -68,7 +66,7 @@ class Lobby extends Phaser.State {
         console.log(this.slider);
 
 
-        var btn = this.game.add.image(670, 892, "play");
+        var btn = this.game.add.image(784, 892, "play");
         btn.inputEnabled = true;
 
         var self = this;

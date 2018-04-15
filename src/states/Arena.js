@@ -11,7 +11,8 @@ class Arena extends Phaser.State {
     preload() {
         this.game.load.image('tom', 'assets/final/char-babuji-standing.png');
         this.game.load.image('harry', 'assets/final/char-prem-standing.png');
-        this.game.load.image('wall', 'assets/wall.png');
+        this.game.load.image('wall', 'assets/final/wall.png');
+        this.game.load.image('bg', 'assets/final/bg-fight.png');
         this.game.load.image('projectile', 'assets/final/projectile-bullet.png');
         this.game.load.crossOrigin = "anonymous";
 
@@ -26,10 +27,21 @@ class Arena extends Phaser.State {
 
     checkGameState() {
         let self = this;
-        HistoryWrapper.getOutcome(function(message) {
+        HistoryWrapper.getOutcome(function (message) {
             if (message) {
                 console.log("Game already ended in room!");
-                self.game.state.start("GameOver");
+                kapowWrapper.getUserInfo(function (owner) {
+                    var myId = owner.player.id;
+                    if (message.data.ranks[myId] === 1) {
+                        self.game.state.start("GameOver", true, null, "Win");
+                    }
+                    if (message.data.ranks[myId] === 2) {
+                        self.game.state.start("GameOver", true, null, "Loose");
+                    } else {
+                        self.game.state.start("GameOver", true, null, null);
+                    }
+                });
+
             } else {
                 self.createState();
             }
@@ -37,6 +49,7 @@ class Arena extends Phaser.State {
     }
 
     createState() {
+        this.game.add.image(0, 0, 'bg');
         this.health1 = new PhaserUi.ProgressBar(this.game, 730, 70, PhaserUi.Graphics.roundedRectBmd, 4, '');
         this.health2 = new PhaserUi.ProgressBar(this.game, 730, 70, PhaserUi.Graphics.roundedRectBmd, 4, '');
         this.health1.x = 400;
@@ -133,10 +146,10 @@ class Arena extends Phaser.State {
 
     getPlayers() {
         var self = this;
-        HistoryWrapper.getChoice(self.playerID, function(message) {
+        HistoryWrapper.getChoice(self.playerID, function (message) {
             console.log(JSON.stringify(message) + " " + self.playerID);
             if (!message) {
-                HistoryWrapper.getChoice(self.opponentID, function(message) {
+                HistoryWrapper.getChoice(self.opponentID, function (message) {
                     console.log(JSON.stringify(message) + " " + self.opponentID);
                     var opponentChoice = message.data.characterId;
                     self.respectChoices(1 - opponentChoice, opponentChoice);
@@ -179,13 +192,13 @@ class Arena extends Phaser.State {
         console.log("Adding facebook images");
         var self = this;
 
-        kapowWrapper.getRoomInfo(function(room) {
+        kapowWrapper.getRoomInfo(function (room) {
             var players = room.players;
             for (var i = 0; i < 2; i++) {
                 self.game.load.image("avatar_" + players[i].id, players[i].profileImage + "?height=100&width=100");
             }
             self.game.load.start();
-            self.game.load.onLoadComplete.add(function() {
+            self.game.load.onLoadComplete.add(function () {
                 let myImage = self.game.add.sprite(750, 50, "avatar_" + self.playerID);
                 let oppImage = self.game.add.sprite(1050, 50, "avatar_" + self.opponentID);
                 console.log(myImage);
@@ -291,12 +304,11 @@ class Arena extends Phaser.State {
             console.log("loser", loserId);
             kapowWrapper.callOnServer('endGameOnServer', loserId, function () {
                 console.log("Ranks success");
-                self.game.state.start("GameOver");
+                self.game.state.start("GameOver", true, false, "You Win !!");
             });
         } else {
-            this.game.state.start("GameOver");
+            this.game.state.start("GameOver", true, false, "You Lose!!");
         }
-
     }
 
     dragFinished(draggedObject, pointer, initialObject) {

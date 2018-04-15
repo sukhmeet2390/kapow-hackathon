@@ -34,7 +34,7 @@ class Preload extends Phaser.State {
                 self.loading.progress = prog + 0.1;
                 if (self.loading.progress >= 0.999999) {
                     clearTimeout(id);
-                    self.game.state.start("Arena");
+                    self.game.state.start("GameOver");
                     kapowWrapper.getRoomInfo(function (room) {
                         if (!room) {
                             console.log("No Room Found");
