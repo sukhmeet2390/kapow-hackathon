@@ -33,7 +33,11 @@ class GameOver extends Phaser.State {
     }
 
     restartGame() {
-        this.game.state.start("Lobby");
+        var self = this;
+        kapow.unloadRoom(function() {
+            console.log("Successfully unloaded room!");
+            self.game.state.start("Lobby");
+        });
     }
 
     _handleFbClick() {
@@ -47,6 +51,14 @@ class GameOver extends Phaser.State {
         console.log("Tweet Share");
         KapowWrapper.share(this.text, 'twitter', function () {
             console.log('Tweet Share successful');
+        });
+    }
+
+    _handleBackButton() {
+        console.log("Back button inside game over!");
+        kapow.unloadRoom(function() {
+            console.log("Unloaded room");
+            kapow.close();
         });
     }
 }

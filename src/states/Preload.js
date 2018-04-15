@@ -50,6 +50,10 @@ class Preload extends Phaser.State {
 
     }
 
+    _handleBackButton() {
+        console.log("Back button inside preload!");
+    }
+
     update() {
 
     }

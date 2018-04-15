@@ -22,7 +22,15 @@ class Arena extends Phaser.State {
 
     create() {
         console.log("Create of arena called!");
-        this.checkGameState();
+        var self = this;
+        kapowWrapper.getRoomInfo(function(room) {
+            console.log("Room fetched : " + room);
+            if (!room) {
+                self.game.state.start("Menu");
+            } else {
+                self.checkGameState();
+            }
+        });
     }
 
     checkGameState() {
@@ -203,6 +211,7 @@ class Arena extends Phaser.State {
                 let oppImage = self.game.add.sprite(1050, 50, "avatar_" + self.opponentID);
                 console.log(myImage);
                 console.log(oppImage);
+
             }, self);
         });
     }
@@ -358,6 +367,14 @@ class Arena extends Phaser.State {
             this.winner = this.firstPlayerSilhouette;
             this.endGame();
         }
+    }
+
+    _handleBackButton() {
+        console.log("Back button inside arena!");
+        kapow.unloadRoom(function() {
+            console.log("Unloaded room");
+            kapow.close();
+        });
     }
 }
 
