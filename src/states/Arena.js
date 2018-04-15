@@ -124,21 +124,6 @@ class Arena extends Phaser.State {
         } else {
             console.log("Player hit the other one ");
             if (isFirstPlayer) {
-                if (this.secondPlayerSilhouette.player.name === "tom") {
-                    this.firstPlayerSilhouette.loadTexture('babuji-hit', 1, true);
-                    var id = setTimeout(function(){
-                        self.firstPlayerSilhouette.loadTexture("tom", 1, true);
-                        clearTimeout(id);
-                    }, 1000);
-                }
-                if (this.secondPlayerSilhouette.player.name === "harry") {
-                    this.firstPlayerSilhouette.loadTexture('prem-hit', 1, true);
-                    var id = setTimeout(function(){
-                        self.firstPlayerSilhouette.loadTexture("harry", 1, true);
-                        clearTimeout(id);
-                    }, 1000);
-
-                }
                 this.updateHealth2(0.5);
             } else {
                 this.updateHealth1(0.5);
@@ -200,12 +185,12 @@ class Arena extends Phaser.State {
         HistoryWrapper.getLastSyncState(function(message) {
 
             if (myChoice === 0) {
-                self.secondPlayerSilhouette = new Tom(self.game, 1629, 690, 'tom', self.opponentID);
-                self.firstPlayerSilhouette = new Harry(self.game, 80, 690, 'harry', self.playerID);
+                self.secondPlayerSilhouette = new Tom(self.game, 1629, 690, self.opponentID);
+                self.firstPlayerSilhouette = new Harry(self.game, 80, 690, self.playerID);
 
             } else {
-                self.secondPlayerSilhouette = new Harry(self.game, 1629, 690, 'harry', self.opponentID);
-                self.firstPlayerSilhouette = new Tom(self.game, 80, 690, 'tom', self.playerID);
+                self.secondPlayerSilhouette = new Harry(self.game, 1629, 690, self.opponentID);
+                self.firstPlayerSilhouette = new Tom(self.game, 80, 690, self.playerID);
             }
 
             if (message) {
@@ -368,15 +353,6 @@ class Arena extends Phaser.State {
         this.secondPlayerWeapon.events.onOutOfBounds.add(this.finishAnimation, this, 0, this.secondPlayerWeapon);
         this.game.physics.enable([this.secondPlayerWeapon], Phaser.Physics.ARCADE);
         this.secondPlayerWeapon.body.allowGravity = false;
-        if (this.firstPlayerSilhouette && this.firstPlayerSilhouette.player.name === "Tom") {
-            console.log("Changing textur tom to unloaded");
-            this.firstPlayerSilhouette.loadTexture('tom', 1, true);
-        } else if (this.firstPlayerSilhouette && this.firstPlayerSilhouette.player.name === "Harry") {
-            console.log("Changing textur harry to unloaded");
-            this.firstPlayerSilhouette.loadTexture('harry', 1, true);
-        } else {
-            console.log("Neither tom or harry " + this.firstPlayerSilhouette);
-        }
     }
 
     killAllWeapons() {

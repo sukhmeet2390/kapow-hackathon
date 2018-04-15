@@ -4,7 +4,8 @@ import Power from "./Power";
 import Player from "./Player";
 
 export default class Harry extends Phaser.Sprite {
-    constructor(game, x, y, label, jid) {
+    constructor(game, x, y, jid) {
+        let label = 'harry';
         super(game, x, y, label);
         this.anchor.setTo(0.5);
         this.game.add.sprite(x, y, label);
