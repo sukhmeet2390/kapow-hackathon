@@ -15,6 +15,9 @@ class Arena extends Phaser.State {
         this.game.load.image('babuji-loaded', 'assets/final/char-babuji-kalash.png');
         this.game.load.image('prem-loaded', 'assets/final/char-prem-gun.png');
 
+        this.game.load.image('prem-hit', 'assets/final/char-prem-hit.png');
+        this.game.load.image('babuji-hit', 'assets/final/char-babuji-ouch.png');
+
         this.game.load.image('wall', 'assets/final/wall.png');
         this.game.load.image('bg', 'assets/final/bg-fight.png');
         this.game.load.image('projectile', 'assets/final/projectile-bullet.png');
@@ -118,12 +121,27 @@ class Arena extends Phaser.State {
     }
 
     _handleHit(hitBy, hitWeapon, hitTo, isWall, isFirstPlayer) {
-
+        var self = this;
         if (isWall) {
             console.log("You hit the wall");
         } else {
             console.log("Player hit the other one ");
             if (isFirstPlayer) {
+                if (this.secondPlayerSilhouette.player.name === "tom") {
+                    this.firstPlayerSilhouette.loadTexture('babuji-hit');
+                    var id = setTimeout(function(){
+                        self.firstPlayerSilhouette.loadTexture("tom");
+                        clearTimeout(id);
+                    },1000);
+                }
+                if (this.secondPlayerSilhouette.player.name === "harry") {
+                    this.firstPlayerSilhouette.loadTexture('prem-hit');
+                    var id = setTimeout(function(){
+                        self.firstPlayerSilhouette.loadTexture("harry");
+                        clearTimeout(id);
+                    },1000);
+
+                }
                 this.updateHealth2(0.2)
             } else {
                 this.updateHealth1(0.2);
@@ -263,12 +281,14 @@ class Arena extends Phaser.State {
         this.firstPlayerWeapon.checkWorldBounds = true;
         this.firstPlayerWeaponTransparent.events.onDragStop.add(this.dragFinished, this, 0, this.firstPlayerWeapon);
         this.firstPlayerWeapon.events.onOutOfBounds.add(this.finishAnimation, this, 0, this.firstPlayerWeapon);
-        if (this.firstPlayerSilhouette.player.name === "Tom") {
+        if (this.firstPlayerSilhouette && this.firstPlayerSilhouette.player.name === "Tom") {
+            console.log("Changing textur tom to loaded");
             this.firstPlayerSilhouette.loadTexture('babuji-loaded');
-        } else if (this.firstPlayerSilhouette.player.name === "Harry") {
+        } else if (this.firstPlayerSilhouette && this.firstPlayerSilhouette.player.name === "Harry") {
+            console.log("Changing textur harry to loaded");
             this.firstPlayerSilhouette.loadTexture('prem-loaded');
         } else {
-            console.log("Neither tom or harry " + this.firstPlayerSilhouette.player.name);
+            console.log("Neither tom or harry " + this.firstPlayerSilhouette);
         }
     }
 
@@ -285,12 +305,14 @@ class Arena extends Phaser.State {
         this.secondPlayerWeapon.events.onOutOfBounds.add(this.finishAnimation, this, 0, this.secondPlayerWeapon);
         this.game.physics.enable([this.secondPlayerWeapon], Phaser.Physics.ARCADE);
         this.secondPlayerWeapon.body.allowGravity = false;
-        if (this.firstPlayerSilhouette.player.name === "Tom") {
+        if (this.firstPlayerSilhouette && this.firstPlayerSilhouette.player.name === "Tom") {
+            console.log("Changing textur tom to unloaded");
             this.firstPlayerSilhouette.loadTexture('tom');
-        } else if (this.firstPlayerSilhouette.player.name === "Harry") {
+        } else if (this.firstPlayerSilhouette && this.firstPlayerSilhouette.player.name === "Harry") {
+            console.log("Changing textur harry to unloaded");
             this.firstPlayerSilhouette.loadTexture('harry');
         } else {
-            console.log("Neither tom or harry " + this.firstPlayerSilhouette.player.name);
+            console.log("Neither tom or harry " + this.firstPlayerSilhouette);
         }
     }
 
