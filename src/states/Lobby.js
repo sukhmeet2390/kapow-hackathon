@@ -13,9 +13,8 @@ class Lobby extends Phaser.State {
 
     preload() {
         console.log("Lobby Preload");
-        this.load.image("block1", "assets/prem.png");
-        this.load.image("block2", "assets/babuji.png");
-        this.load.image("bg", "assets/black.png");
+        this.load.image("block1", "assets/final/lobby_prem.png");
+        this.load.image("block2", "assets/final/lobby_babuji.png");
         this.load.image("play", "assets/bt-battle.png");
         this.slider = new phaseSlider(this.game);
     }
@@ -52,7 +51,9 @@ class Lobby extends Phaser.State {
 
     create() {
         let block1 = this.game.add.image(0, 0, "block1");
+        block1.scale.setTo(0.23,0.25);
         let block2 = this.game.add.image(0, 0, "block2");
+        block2.scale.setTo(0.23,0.25);
 
         this.slider.createSlider({
             customSliderBG: false,

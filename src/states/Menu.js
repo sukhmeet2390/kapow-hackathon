@@ -2,21 +2,18 @@
 
 class Menu extends Phaser.State {
     preload() {
-        this.game.load.image('prem', 'assets/final/char-prem-standing.png');
-        this.game.load.image('babuji', 'assets/final/char-babuji-standing.png');
+        this.game.load.image('bg', 'assets/final/welcome.png');
         this.game.load.image('bt', 'assets/bt-battle.png');
     }
 
     create() {
-        let prem = this.game.add.image(this.game.world.centerX - 900, this.game.world.centerY - 500, 'prem')
-        prem.scale.setTo(3,3);
+        let prem = this.game.add.image(0, 0, 'bg');
+        prem.scale.setTo(0.23,0.25);
 
-        let babu = this.game.add.image(this.game.world.centerX + 500, this.game.world.centerY - 500, 'babuji')
-        babu.scale.setTo(3,3);
 
 
         let button = this.game.add.button(this.game.world.centerX,
-            this.game.world.centerY+200, 'bt', this.actionOnClick, this, 2, 1, 0);
+            this.game.world.centerY+100, 'bt', this.actionOnClick, this, 2, 1, 0);
         button.anchor.setTo(0.5);
 
 
