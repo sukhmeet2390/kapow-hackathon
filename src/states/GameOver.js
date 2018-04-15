@@ -13,9 +13,17 @@ class GameOver extends Phaser.State {
 
     init(text) {
         console.log("Text : " + text);
-        if (!text) this.text = "Great Job !";
-        if (text === "Win") this.win = true;
-        else this.win = false;
+        if (!text) {
+            this.text = "Come, play this new addictive game!";
+        }
+        else if (text === "Win") {
+            this.win = true;
+            this.text = "I just won fair and square on this new addictive game!";
+        }
+        else {
+            this.win = false;
+            this.text = "Come, play this new addictive game!";
+        }
     }
 
     create() {
