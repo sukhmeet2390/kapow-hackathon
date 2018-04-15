@@ -195,9 +195,9 @@ class Arena extends Phaser.State {
     }
 
     playMove(weapon, power, angle) {
-        console.log("Emulating move", this.game, angle, power, weapon.body.velocity);
-        this.game.physics.arcade.velocityFromAngle(angle, power, weapon.body.velocity);
+        console.log("Emulating move : ", this.game, angle, power, weapon.body.velocity);
         weapon.body.allowGravity = true;
+        this.game.physics.arcade.velocityFromAngle(angle, power, weapon.body.velocity);
     }
 
     enableTurn() {
