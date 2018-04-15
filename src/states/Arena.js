@@ -23,7 +23,6 @@ class Arena extends Phaser.State {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.physics.arcade.gravity.y = 500;
         this.game.physics.arcade.gravity.x = 0;
-        this.wind = 0;
     }
 
     create() {
@@ -84,6 +83,8 @@ class Arena extends Phaser.State {
 
     update() {
         var self = this;
+
+        this.displayWind();
 
         if (this.firstPlayerWeapon && this.secondPlayerSilhouette) {
             this.game.physics.arcade.collide(this.firstPlayerWeapon, this.secondPlayerSilhouette, function (weapon, player) {
@@ -253,6 +254,7 @@ class Arena extends Phaser.State {
     }
 
     enableTurn() {
+        this.game.physics.arcade.gravity.x = this.getRandomWind();
         this.killAllWeapons();
         this.firstPlayerWeapon = this.game.add.sprite(300, 600, 'projectile');
         this.firstPlayerWeaponTransparent = this.game.add.sprite(300, 600, 'projectile');
@@ -274,6 +276,14 @@ class Arena extends Phaser.State {
         }
     }
 
+    displayWind() {
+        console.log("Wind speed : " + this.game.physics.arcade.gravity.x);
+    }
+
+    getRandomWind() {
+        return Math.floor(Math.random() * 300);
+    }
+
     finishAnimation(weapon) {
         console.log("Animation finished!");
         this.killWeapon(weapon);
@@ -281,6 +291,7 @@ class Arena extends Phaser.State {
     }
 
     disableTurn() {
+        this.game.physics.arcade.gravity.x = 0;
         this.killAllWeapons();
         this.secondPlayerWeapon = this.game.add.sprite(1500, 600, 'projectile');
         this.secondPlayerWeapon.checkWorldBounds = true;
@@ -345,7 +356,7 @@ class Arena extends Phaser.State {
         let angle = this.getAngle(initialObject.position, draggedObject.position);
         console.log("Power : " + power + " and Angle : " + angle);
         this.killWeapon(this.firstPlayerWeaponTransparent);
-        this.sendMove(power, angle, this.wind);
+        this.sendMove(power, angle, this.game.physics.arcade.gravity.x);
     }
 
     getAngle(initialPosition, finalPosition) {
