@@ -58,15 +58,16 @@ class Lobby extends Phaser.State {
         console.log(this.slider);
 
 
-        var btn = this.game.add.image(784, 892, "play");
-        btn.inputEnabled = true;
+        this.btn = this.game.add.image(784, 892, "play");
+        this.btn.inputEnabled = true;
 
         var self = this;
-        btn.events.onInputDown.addOnce(function (e, pointer) {
+        this.btn.events.onInputDown.add(function (e, pointer) {
+            self.btn.inputEnabled = false;
             var index = self.slider.getCurrentIndex();
             console.log("Selected char ", index);
             self.onClick(index);
-        })
+        });
     }
     onClick(index) {
         console.log("Play with friends clicked!");
@@ -76,6 +77,7 @@ class Lobby extends Phaser.State {
                 self.sendChoices(index);
             },
             function (error) {
+                self.btn.inputEnabled = true;
                 console.log(error);
             });
     }

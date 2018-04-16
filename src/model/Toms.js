@@ -3,11 +3,44 @@ import Player from "./Player";
 import Power from "./Power";
 
 export default class Tom extends Phaser.Sprite {
-    constructor(game, x, y, label, jid) {
+    constructor(game, x, y, jid) {
+        let label = 'tom-left';
+        if (x > 600) {
+            label = 'tom-right';
+        }
         super(game, x, y, label);
         this.anchor.setTo(0.5);
-        this.frame = 0;
-        this.game.add.sprite(x, y, label);
-        this.player = new Player("Tom", jid, [new Power("bone", 10), new Power("fish", 10)]);
+        this.image = this.game.add.sprite(x, y, label);
+        this.player = new Player("Tom", jid, [new Power("sanskar", 10), new Power("heart", 10)]);
+        this.music = this.game.add.audio('tom-sound');
+    }
+
+    playerHit() {
+        let self = this;
+        let label = 'tom-hit-left';
+        let x = this.position.x;
+        let y = this.position.y;
+
+        if (x > 600) {
+            label = 'tom-hit-right';
+        }
+        self.hitImage = this.game.add.sprite(x, y, label);
+
+        setInterval(function () {
+            self.hitImage.destroy();
+        }, 400);
+    }
+
+    playSuccess() {
+        this.game.sound.stopAll();
+        this.music.play();
+    }
+
+    showHealthMove(arena) {
+        this.heartButton = this.game.add.button(200, 200, 'tom-heart', arena.sendHealthMove, this, 0, 0, 0);
+    }
+
+    removeHealthButton() {
+        this.heartButton.destroy();
     }
 }

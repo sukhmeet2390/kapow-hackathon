@@ -57,7 +57,20 @@ let HistoryWrapper = {
                 }
             }
             successCB(null);
-        })
+        });
+    },
+    getHeartMessage(playerId, successCB) {
+        this.getAllMessages(function (messages) {
+            let n = messages.length;
+            for (var i = 0; i < n; i++) {
+                let message = messages[n - i - 1];
+                if (message.type == "move" && message.data.type == "HeartMove" && message.data.sentBy == playerId) {
+                    successCB(message);
+                    return;
+                }
+            }
+            successCB(null);
+        });
     }
 };
 

@@ -9,11 +9,16 @@ let EventHandler = {
         this.game = window.phasergame;
         this.gameController = new GameController(game);
         this.arenaController = new ArenaController(game);
-        pubsub.subscribe("menu/playButtonClicked", this.gameController.initNewGame);
+
         pubsub.subscribe("kapow/game/messageReceived", this._handleMessage);
         pubsub.subscribe("kapow/game/turnChange", this._handleTurnChange);
         pubsub.subscribe("kapow/game/playerJoined", this._handlePlayerJoined);
         pubsub.subscribe("kapow/game/backButtonPressed", this._handleBackButton);
+        pubsub.subscribe("kapow/game/resumed", this._handleOnResume);
+    },
+    _handleOnResume(val) {
+        console.log("Handling on resume : " + val);
+        if (window.phasergame.state.current !== "Preload") window.phasergame.state.start("Preload");
     },
     _handleBackButton(val) {
         console.log("Handling back button press! : " + val);
@@ -36,6 +41,10 @@ let EventHandler = {
                 if(message.data.type === "Move"){
                     if (window.phasergame.state.current !== "Arena") return;
                     window.phasergame.state.states.Arena.opponentMove(message);
+                }
+
+                if (message.data.type === "HeartMove" && window.phasergame.state.current === "Arena") {
+                    window.phasergame.state.states.Arena.opponentHealthMove(message);
                 }
                 break;
             case "outcome":

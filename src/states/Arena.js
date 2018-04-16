@@ -7,6 +7,7 @@ import Tom from "../model/Toms";
 import Harry from "../model/Harry";
 import SyncState from "../model/SyncState";
 import Health from "../model/Health";
+import Heart from "../model/Heart";
 
 class Arena extends Phaser.State {
 
@@ -20,6 +21,7 @@ class Arena extends Phaser.State {
     create() {
         console.log("Create of arena called!");
         this.game.add.image(0, 0, 'bg');
+        this.game.sound.stopAll();
 
         let style = { font: "bold 90px Arial", fill: "#FFFFFF"};
         this.windText = this.game.add.text(this.game.world.centerX, 150, '', style);
@@ -122,26 +124,13 @@ class Arena extends Phaser.State {
         if (isWall) {
             console.log("You hit the wall");
         } else {
+            hitBy.playSuccess();
+            hitTo.playerHit();
             console.log("Player hit the other one ");
             if (isFirstPlayer) {
-                if (this.secondPlayerSilhouette.player.name === "tom") {
-                    this.firstPlayerSilhouette.loadTexture('babuji-hit', 1, true);
-                    var id = setTimeout(function(){
-                        self.firstPlayerSilhouette.loadTexture("tom", 1, true);
-                        clearTimeout(id);
-                    }, 1000);
-                }
-                if (this.secondPlayerSilhouette.player.name === "harry") {
-                    this.firstPlayerSilhouette.loadTexture('prem-hit', 1, true);
-                    var id = setTimeout(function(){
-                        self.firstPlayerSilhouette.loadTexture("harry", 1, true);
-                        clearTimeout(id);
-                    }, 1000);
-
-                }
-                this.updateHealth2(0.5);
+                this.updateHealth2(0.25);
             } else {
-                this.updateHealth1(0.5);
+                this.updateHealth1(0.25);
             }
         }
 
@@ -167,6 +156,7 @@ class Arena extends Phaser.State {
                 }
                 console.log("UserJID : " + self.playerID);
                 console.log("opponentJID : " + self.opponentID);
+
                 self.getPlayers();
                 self.setTurn();
 
@@ -200,12 +190,12 @@ class Arena extends Phaser.State {
         HistoryWrapper.getLastSyncState(function(message) {
 
             if (myChoice === 0) {
-                self.secondPlayerSilhouette = new Tom(self.game, 1629, 690, 'tom', self.opponentID);
-                self.firstPlayerSilhouette = new Harry(self.game, 80, 690, 'harry', self.playerID);
+                self.secondPlayerSilhouette = new Tom(self.game, 1629, 690, self.opponentID);
+                self.firstPlayerSilhouette = new Harry(self.game, 80, 690, self.playerID);
 
             } else {
-                self.secondPlayerSilhouette = new Harry(self.game, 1629, 690, 'harry', self.opponentID);
-                self.firstPlayerSilhouette = new Tom(self.game, 80, 690, 'tom', self.playerID);
+                self.secondPlayerSilhouette = new Harry(self.game, 1629, 690, self.opponentID);
+                self.firstPlayerSilhouette = new Tom(self.game, 80, 690, self.playerID);
             }
 
             if (message) {
@@ -237,8 +227,26 @@ class Arena extends Phaser.State {
 
             self.firstPlayerSilhouette.body.immovable = true;
             self.secondPlayerSilhouette.body.immovable = true;
-            // self.addFacebookAvatars();
 
+            HistoryWrapper.getHeartMessage(self.playerID, function (message) {
+                if (!message) {
+                    self.firstPlayerSilhouette.showHealthMove(self);
+                }
+            });
+
+        });
+    }
+
+    sendHealthMove() {
+        let self = window.phasergame.state.states.Arena;
+        if (self.myTurn === false) return;
+        let healthMove = new Heart(self.playerID);
+        self.firstPlayerSilhouette.removeHealthButton();
+        console.log("Sending heart move : " + healthMove);
+        kapowWrapper.callOnServer('sendTurn', new MoveData(healthMove, self.playerID, self.playerID), function() {
+            let change = Math.min(1 - self.health1.progress, 0.5);
+            self.updateHealth1(-change);
+            self.sendSyncState();
         });
     }
 
@@ -286,6 +294,15 @@ class Arena extends Phaser.State {
         this.playMove(this.secondPlayerWeapon, moveMessage.data.power, moveMessage.data.angle, moveMessage.data.wind * -1);
     }
 
+    opponentHealthMove(message) {
+        let self = window.phasergame.state.states.Arena;
+        if (message.data.type === "HeartMove" && message.data.sentBy !== self.playerID) {
+            console.log("Opponent used a heart move!");
+            let change = Math.min(1 - self.health2.progress, 0.5);
+            self.updateHealth2(-change);
+        }
+    }
+
     playMove(weapon, power, angle, wind) {
         console.log("Emulating move : ", angle, power, wind, weapon.body.velocity);
         weapon.body.allowGravity = true;
@@ -294,8 +311,10 @@ class Arena extends Phaser.State {
     }
 
     enableTurn() {
-        this.game.physics.arcade.gravity.x = this.getRandomWind();
         this.killAllWeapons();
+        if (this.winner) return;
+        this.myTurn = true;
+        this.game.physics.arcade.gravity.x = this.getRandomWind();
         this.firstPlayerWeapon = this.game.add.sprite(300, 600, 'projectile');
         this.firstPlayerWeaponTransparent = this.game.add.sprite(300, 600, 'projectile');
         this.game.physics.enable([this.firstPlayerWeapon], Phaser.Physics.ARCADE);
@@ -361,20 +380,13 @@ class Arena extends Phaser.State {
     disableTurn() {
         this.game.physics.arcade.gravity.x = 0;
         this.killAllWeapons();
+        this.myTurn = false;
+        if (this.winner) return;
         this.secondPlayerWeapon = this.game.add.sprite(1500, 600, 'projectile');
         this.secondPlayerWeapon.checkWorldBounds = true;
         this.secondPlayerWeapon.events.onOutOfBounds.add(this.finishAnimation, this, 0, this.secondPlayerWeapon);
         this.game.physics.enable([this.secondPlayerWeapon], Phaser.Physics.ARCADE);
         this.secondPlayerWeapon.body.allowGravity = false;
-        if (this.firstPlayerSilhouette && this.firstPlayerSilhouette.player.name === "Tom") {
-            console.log("Changing textur tom to unloaded");
-            this.firstPlayerSilhouette.loadTexture('tom', 1, true);
-        } else if (this.firstPlayerSilhouette && this.firstPlayerSilhouette.player.name === "Harry") {
-            console.log("Changing textur harry to unloaded");
-            this.firstPlayerSilhouette.loadTexture('harry', 1, true);
-        } else {
-            console.log("Neither tom or harry " + this.firstPlayerSilhouette);
-        }
     }
 
     killAllWeapons() {
@@ -396,6 +408,10 @@ class Arena extends Phaser.State {
     }
 
     setTurn() {
+        if (this.winner) {
+            this.killAllWeapons();
+            return;
+        }
         let self = this;
         kapowWrapper.getRoomInfo(function (room) {
             self.room = room;

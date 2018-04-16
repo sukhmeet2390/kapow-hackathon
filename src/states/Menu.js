@@ -10,16 +10,6 @@ class Menu extends Phaser.State {
         let button = this.game.add.button(784, 782, 'bt', this.actionOnClick, this, 2, 1, 0);
     }
 
-    _handleGameload(room) {
-        if (room === null) {
-            console.log("No Room Found");
-
-        }
-        else {
-
-        }
-    }
-
     _handleBackButton() {
         console.log("Back button inside Menu!");
         kapow.close();

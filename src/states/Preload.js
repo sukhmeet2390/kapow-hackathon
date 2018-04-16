@@ -6,11 +6,7 @@ class Preload extends Phaser.State {
     preload() {
         this.load.onLoadComplete.addOnce(this._onLoadComplete, this);
 
-        var Font = "40px Comic Sans MS";
-        this.loadText = this.add.text(this.world.centerX,this.world.centerY,'loading ',{font: Font, fill: '#ffffff', stroke: '#55B50D', strokeThickness: 3});
-        this.loadText.anchor.setTo(0.5,0.5);
-
-        this.loading = new PhaserUi.ProgressBar(this.game, 1300, 150, PhaserUi.Graphics.roundedRectBmd, 4, '', 0xFFF000);
+        this.loading = new PhaserUi.ProgressBar(this.game, 1300, 100, PhaserUi.Graphics.roundedRectBmd, 4, '', 0xFFF000);
         this.loading.x = this.game.world.centerX;
         this.loading.y = this.game.world.centerY;
 
@@ -20,9 +16,9 @@ class Preload extends Phaser.State {
         }, 1000);
 
 
-
-        this.game.load.image('button', 'assets/playGame.png');
         this.game.load.audio('gameSound', 'assets/audio/Theme.mp3', true);
+        this.game.load.audio('tom-sound', 'assets/audio/tom.mp3', true);
+        this.game.load.audio('harry-sound', 'assets/audio/harry.mp3', true);
         // Menu
         this.game.load.image('welcome', 'assets/final/welcome.png');
         this.game.load.image('bt', 'assets/final/bt-play.png');
@@ -31,12 +27,20 @@ class Preload extends Phaser.State {
         this.load.image("block2", "assets/final/lobby_babu.png");
         this.load.image("play", "assets/final/bt-battle.png");
         // Arena
-        this.game.load.image('tom', 'assets/final/char-babuji-standing.png');
-        this.game.load.image('harry', 'assets/final/char-prem-standing.png');
-        this.game.load.image('babuji-loaded', 'assets/final/char-babuji-kalash.png');
-        this.game.load.image('prem-loaded', 'assets/final/char-prem-gun.png');
-        this.game.load.image('prem-hit', 'assets/final/char-prem-hit.png');
-        this.game.load.image('babuji-hit', 'assets/final/char-babuji-ouch.png');
+        this.game.load.image('tom-left', 'assets/final/left/char-babuji-standing.png');
+        this.game.load.image('tom-right', 'assets/final/right/char-babuji-standing.png');
+        this.game.load.image('tom-hit-left', 'assets/final/left/char-babuji-ouch.png');
+        this.game.load.image('tom-hit-right', 'assets/final/right/char-babuji-ouch.png');
+        this.game.load.image('tom-heart', 'assets/final/potion.png');
+        // this.game.load.image('tom-loaded', 'assets/final/char-babuji-kalash.png');
+
+        this.game.load.image('harry-left', 'assets/final/left/char-prem-standing.png');
+        this.game.load.image('harry-right', 'assets/final/right/char-prem-standing.png');
+        this.game.load.image('harry-hit-left', 'assets/final/left/char-prem-hit.png');
+        this.game.load.image('harry-hit-right', 'assets/final/right/char-prem-hit.png');
+        this.game.load.image('harry-heart', 'assets/final/heart.png');
+        // this.game.load.image('harry-loaded', 'assets/final/char-prem-gun.png');
+
         this.game.load.image('wall', 'assets/final/wall.png');
         this.game.load.image('bg', 'assets/final/bg-fight.png');
         this.game.load.image('projectile', 'assets/final/projectile-bullet.png');
@@ -62,7 +66,7 @@ class Preload extends Phaser.State {
         this.scale.forceOrientation(true, false);
 
         var self = this;
-        this.game.sound.setDecodedCallback(['gameSound'], function(){
+        this.game.sound.setDecodedCallback(['gameSound', 'tom-sound', 'harry-sound'], function(){
             console.log('sounds are ready');
             this.theme.play();
             var id = setInterval(function () {
