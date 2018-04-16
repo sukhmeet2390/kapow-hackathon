@@ -35,4 +35,12 @@ export default class Tom extends Phaser.Sprite {
         this.game.sound.stopAll();
         this.music.play();
     }
+
+    showHealthMove(arena) {
+        this.heartButton = this.game.add.button(200, 200, 'bt', arena.sendHealthMove, this, 0, 0, 0);
+    }
+
+    removeHealthButton() {
+        this.heartButton.destroy();
+    }
 }

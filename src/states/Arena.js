@@ -127,9 +127,9 @@ class Arena extends Phaser.State {
             hitTo.playerHit();
             console.log("Player hit the other one ");
             if (isFirstPlayer) {
-                this.updateHealth2(0.5);
+                this.updateHealth2(0.25);
             } else {
-                this.updateHealth1(0.5);
+                this.updateHealth1(0.25);
             }
         }
 
@@ -155,6 +155,7 @@ class Arena extends Phaser.State {
                 }
                 console.log("UserJID : " + self.playerID);
                 console.log("opponentJID : " + self.opponentID);
+
                 self.getPlayers();
                 self.setTurn();
 
@@ -225,8 +226,25 @@ class Arena extends Phaser.State {
 
             self.firstPlayerSilhouette.body.immovable = true;
             self.secondPlayerSilhouette.body.immovable = true;
-            // self.addFacebookAvatars();
 
+            HistoryWrapper.getHeartMessage(self.playerID, function (message) {
+                if (!message) {
+                    self.firstPlayerSilhouette.showHealthMove(self);
+                }
+            });
+
+        });
+    }
+
+    sendHealthMove() {
+        let self = this;
+        let healthMove = new Heart(this.playerID);
+        this.firstPlayerSilhouette.removeHealthButton();
+        console.log("Sending heart move : " + healthMove);
+        kapowWrapper.callOnServer('sendTurn', new MoveData(healthMove, this.playerID, this.playerID), function() {
+            let change = Math.min(1 - self.health1.progress, 0.5);
+            self.updateHealth1(-change);
+            self.sendSyncState();
         });
     }
 
