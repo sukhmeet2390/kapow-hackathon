@@ -292,6 +292,15 @@ class Arena extends Phaser.State {
         this.playMove(this.secondPlayerWeapon, moveMessage.data.power, moveMessage.data.angle, moveMessage.data.wind * -1);
     }
 
+    opponentHealthMove(message) {
+        let self = this;
+        if (message.data.type === "HeartMove" && message.data.sentBy === this.playerID) {
+            console.log("Opponent used a heart move!");
+            let change = Math.min(1 - self.health2.progress, 0.5);
+            self.updateHealth2(-change);
+        }
+    }
+
     playMove(weapon, power, angle, wind) {
         console.log("Emulating move : ", angle, power, wind, weapon.body.velocity);
         weapon.body.allowGravity = true;

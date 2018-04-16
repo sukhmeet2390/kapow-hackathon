@@ -42,6 +42,10 @@ let EventHandler = {
                     if (window.phasergame.state.current !== "Arena") return;
                     window.phasergame.state.states.Arena.opponentMove(message);
                 }
+
+                if (message.data.type === "HeartMove" && window.phasergame.state.current === "Arena") {
+                    window.phasergame.state.states.Arena.opponentHealthMove(message);
+                }
                 break;
             case "outcome":
                 this.arenaController.endGame(message);
