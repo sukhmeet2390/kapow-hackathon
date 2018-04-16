@@ -7,6 +7,7 @@ import Tom from "../model/Toms";
 import Harry from "../model/Harry";
 import SyncState from "../model/SyncState";
 import Health from "../model/Health";
+import Heart from "../model/Heart";
 
 class Arena extends Phaser.State {
 
@@ -237,11 +238,11 @@ class Arena extends Phaser.State {
     }
 
     sendHealthMove() {
-        let self = this;
-        let healthMove = new Heart(this.playerID);
-        this.firstPlayerSilhouette.removeHealthButton();
+        let self = window.phasergame.state.states.Arena;
+        let healthMove = new Heart(self.playerID);
+        self.firstPlayerSilhouette.removeHealthButton();
         console.log("Sending heart move : " + healthMove);
-        kapowWrapper.callOnServer('sendTurn', new MoveData(healthMove, this.playerID, this.playerID), function() {
+        kapowWrapper.callOnServer('sendTurn', new MoveData(healthMove, self.playerID, self.playerID), function() {
             let change = Math.min(1 - self.health1.progress, 0.5);
             self.updateHealth1(-change);
             self.sendSyncState();
@@ -293,8 +294,8 @@ class Arena extends Phaser.State {
     }
 
     opponentHealthMove(message) {
-        let self = this;
-        if (message.data.type === "HeartMove" && message.data.sentBy === this.playerID) {
+        let self = window.phasergame.state.states.Arena;
+        if (message.data.type === "HeartMove" && message.data.sentBy !== self.playerID) {
             console.log("Opponent used a heart move!");
             let change = Math.min(1 - self.health2.progress, 0.5);
             self.updateHealth2(-change);
