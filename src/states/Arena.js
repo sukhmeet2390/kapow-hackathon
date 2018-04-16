@@ -239,6 +239,7 @@ class Arena extends Phaser.State {
 
     sendHealthMove() {
         let self = window.phasergame.state.states.Arena;
+        if (self.myTurn === false) return;
         let healthMove = new Heart(self.playerID);
         self.firstPlayerSilhouette.removeHealthButton();
         console.log("Sending heart move : " + healthMove);
@@ -312,6 +313,7 @@ class Arena extends Phaser.State {
     enableTurn() {
         this.killAllWeapons();
         if (this.winner) return;
+        this.myTurn = true;
         this.game.physics.arcade.gravity.x = this.getRandomWind();
         this.firstPlayerWeapon = this.game.add.sprite(300, 600, 'projectile');
         this.firstPlayerWeaponTransparent = this.game.add.sprite(300, 600, 'projectile');
@@ -378,6 +380,7 @@ class Arena extends Phaser.State {
     disableTurn() {
         this.game.physics.arcade.gravity.x = 0;
         this.killAllWeapons();
+        this.myTurn = false;
         if (this.winner) return;
         this.secondPlayerWeapon = this.game.add.sprite(1500, 600, 'projectile');
         this.secondPlayerWeapon.checkWorldBounds = true;
