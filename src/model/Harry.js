@@ -39,7 +39,7 @@ export default class Harry extends Phaser.Sprite {
     }
 
     showHealthMove(arena) {
-        this.heartButton = this.game.add.button(200, 200, 'bt', arena.sendHealthMove, this, 0, 0, 0);
+        this.heartButton = this.game.add.button(200, 200, 'harry-heart', arena.sendHealthMove, this, 0, 0, 0);
     }
 
     removeHealthButton() {

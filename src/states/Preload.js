@@ -31,12 +31,14 @@ class Preload extends Phaser.State {
         this.game.load.image('tom-right', 'assets/final/right/char-babuji-standing.png');
         this.game.load.image('tom-hit-left', 'assets/final/left/char-babuji-ouch.png');
         this.game.load.image('tom-hit-right', 'assets/final/right/char-babuji-ouch.png');
+        this.game.load.image('tom-heart', 'assets/final/potion.png');
         // this.game.load.image('tom-loaded', 'assets/final/char-babuji-kalash.png');
 
         this.game.load.image('harry-left', 'assets/final/left/char-prem-standing.png');
         this.game.load.image('harry-right', 'assets/final/right/char-prem-standing.png');
         this.game.load.image('harry-hit-left', 'assets/final/left/char-prem-hit.png');
         this.game.load.image('harry-hit-right', 'assets/final/right/char-prem-hit.png');
+        this.game.load.image('harry-heart', 'assets/final/heart.png');
         // this.game.load.image('harry-loaded', 'assets/final/char-prem-gun.png');
 
         this.game.load.image('wall', 'assets/final/wall.png');
